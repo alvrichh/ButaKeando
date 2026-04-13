@@ -7,6 +7,7 @@ function buildClassName(parts) {
 export function Button({
   children,
   to,
+  href,
   tone = 'primary',
   size = 'md',
   block = false,
@@ -27,6 +28,14 @@ export function Button({
       <Link className={classes} to={to} {...props}>
         {children}
       </Link>
+    );
+  }
+
+  if (href) {
+    return (
+      <a className={classes} href={href} {...props}>
+        {children}
+      </a>
     );
   }
 

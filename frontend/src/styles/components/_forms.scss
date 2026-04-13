@@ -16,14 +16,14 @@
 }
 
 .field__label {
-  color: var(--color-ink-800);
+  color: rgba(247, 241, 234, 0.9);
   font-size: var(--font-size-sm);
   font-weight: 600;
 }
 
 .field__control {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(29, 22, 18, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(184, 145, 70, 0.12);
   border-radius: var(--radius-md);
   color: var(--color-ink-900);
   min-height: 3rem;
@@ -45,7 +45,7 @@
 }
 
 .field__help {
-  color: var(--color-ink-500);
+  color: rgba(247, 241, 234, 0.6);
   font-size: var(--font-size-xs);
 }
 

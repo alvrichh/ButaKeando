@@ -37,7 +37,7 @@ export async function createCheckoutSession(payload) {
       payment_status: 'pending_redirect',
       checkout_url: null,
       email_notification_ready: true,
-      message: 'Mock checkout session created. Connect backend to replace scaffold flow.',
+      message: 'Sesion mock creada. Podras conectar este flujo a backend o pasarela real mas adelante.',
       draft: payload,
     };
   }

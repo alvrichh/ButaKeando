@@ -1,0 +1,294 @@
+.landing-page {
+  background:
+    radial-gradient(circle at top, rgba(184, 145, 70, 0.18), transparent 28%),
+    linear-gradient(180deg, #0d0a09 0%, #14100e 48%, #0a0706 100%);
+  color: var(--color-paper);
+}
+
+.landing-shell {
+  padding-bottom: var(--space-4xl);
+  padding-top: var(--space-xl);
+}
+
+.landing-hero {
+  align-items: center;
+  display: grid;
+  gap: var(--space-2xl);
+  grid-template-columns: 1.1fr 0.9fr;
+  min-height: calc(100vh - 7rem);
+}
+
+.landing-hero__copy,
+.landing-hero__panel {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.landing-hero__logo {
+  display: block;
+  max-width: 17rem;
+}
+
+.landing-hero__copy h1,
+.landing-section__heading h2,
+.landing-contact-card h2 {
+  color: var(--color-white);
+}
+
+.landing-hero__copy h1 {
+  font-size: clamp(2.8rem, 7vw, 5.4rem);
+  line-height: 0.96;
+  max-width: 11ch;
+}
+
+.landing-hero__copy p,
+.landing-section__heading p,
+.landing-value-card p,
+.landing-contact-card p {
+  color: rgba(247, 241, 234, 0.74);
+}
+
+.landing-hero__copy p {
+  font-size: var(--font-size-lg);
+  max-width: 44rem;
+}
+
+.landing-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.landing-hero__panel {
+  background:
+    linear-gradient(180deg, rgba(21, 16, 14, 0.94), rgba(30, 22, 18, 0.9)),
+    linear-gradient(135deg, rgba(184, 145, 70, 0.2), transparent 60%);
+  border: 1px solid rgba(184, 145, 70, 0.18);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+  color: var(--color-paper);
+  overflow: hidden;
+  padding: var(--space-xl);
+}
+
+.landing-hero__panel-logo-wrap {
+  background: rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(184, 145, 70, 0.12);
+  border-radius: calc(var(--radius-lg) - 0.3rem);
+  padding: var(--space-sm);
+}
+
+.landing-hero__panel-logo {
+  border-radius: calc(var(--radius-lg) - 0.45rem);
+  width: 100%;
+}
+
+.landing-hero__panel-text {
+  color: rgba(247, 241, 234, 0.78);
+  font-size: var(--font-size-lg);
+}
+
+.landing-hero__metrics {
+  display: grid;
+  gap: var(--space-sm);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.landing-hero__metric {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(184, 145, 70, 0.12);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+.landing-hero__metric strong {
+  color: var(--color-gold-300);
+  display: block;
+  font-size: 1.3rem;
+}
+
+.landing-hero__metric span {
+  color: rgba(247, 241, 234, 0.72);
+  display: block;
+  font-size: var(--font-size-sm);
+  margin-top: 0.2rem;
+}
+
+.landing-section {
+  display: grid;
+  gap: var(--space-xl);
+  padding-top: var(--space-3xl);
+}
+
+.landing-section__heading {
+  display: grid;
+  gap: var(--space-sm);
+  max-width: 52rem;
+}
+
+.landing-section__heading--row {
+  align-items: end;
+  grid-template-columns: 1fr auto;
+  max-width: none;
+}
+
+.landing-value-grid,
+.landing-product-grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.landing-value-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.landing-product-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.landing-value-card,
+.landing-product-card,
+.landing-contact-card {
+  background: rgba(21, 16, 14, 0.88);
+  border: 1px solid rgba(184, 145, 70, 0.14);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+  color: var(--color-paper);
+}
+
+.landing-value-card h3,
+.landing-product-card h3 {
+  color: var(--color-white);
+}
+
+.landing-product-card {
+  display: grid;
+  gap: var(--space-md);
+  overflow: hidden;
+  padding: var(--space-md);
+}
+
+.landing-product-card__media,
+.landing-product-card__placeholder {
+  border-radius: calc(var(--radius-lg) - 0.45rem);
+  min-height: 19rem;
+  overflow: hidden;
+}
+
+.landing-product-card__media img {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.landing-product-card__placeholder {
+  align-items: end;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-lg);
+}
+
+.landing-product-card__placeholder span {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  color: rgba(247, 241, 234, 0.9);
+  padding: 0.35rem 0.75rem;
+}
+
+.landing-product-card__placeholder strong {
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: 2rem;
+}
+
+.landing-product-card__placeholder--gold {
+  background:
+    radial-gradient(circle at top left, rgba(255, 234, 197, 0.18), transparent 34%),
+    linear-gradient(145deg, #2a1d12, #7a5520 62%, #d8b36c);
+}
+
+.landing-product-card__placeholder--rose {
+  background: linear-gradient(145deg, #2a1818, #6d3a47 65%, #ba8995);
+}
+
+.landing-product-card__placeholder--plum {
+  background: linear-gradient(145deg, #23161d, #5d3f59 62%, #a98ca4);
+}
+
+.landing-product-card__placeholder--wine {
+  background: linear-gradient(145deg, #27100f, #6f2520 60%, #be7a61);
+}
+
+.landing-product-card__content {
+  display: grid;
+  gap: var(--space-sm);
+}
+
+.landing-product-card__content p {
+  color: var(--color-gold-300);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.landing-contact-card {
+  align-items: center;
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: 1fr auto;
+  margin-top: var(--space-3xl);
+  padding: var(--space-xl);
+}
+
+.landing-contact-card__eyebrow {
+  color: var(--color-gold-300);
+  display: block;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.12em;
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+}
+
+@media (max-width: 1080px) {
+  .landing-hero,
+  .landing-product-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .landing-value-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-section__heading--row,
+  .landing-contact-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .landing-shell {
+    padding-top: var(--space-md);
+  }
+
+  .landing-hero,
+  .landing-product-grid,
+  .landing-hero__metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-hero {
+    min-height: auto;
+    padding-top: var(--space-xl);
+  }
+
+  .landing-hero__logo {
+    max-width: 12rem;
+  }
+
+  .landing-hero__copy h1 {
+    font-size: clamp(2.4rem, 14vw, 4rem);
+  }
+
+  .landing-product-card__media,
+  .landing-product-card__placeholder {
+    min-height: 16rem;
+  }
+}

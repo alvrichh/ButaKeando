@@ -1,49 +1,38 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/common/Button';
 import { Input } from '../../../components/common/Input';
-import { Select } from '../../../components/common/Select';
 import { Textarea } from '../../../components/common/Textarea';
+import { useToast } from '../../../components/feedback/ToastProvider';
 import { PageContainer } from '../../../components/layout/PageContainer';
 import { SectionContainer } from '../../../components/layout/SectionContainer';
 import { Card } from '../../../components/ui/Card';
-import { useToast } from '../../../components/feedback/ToastProvider';
-import { getProductBySlug, products } from '../../../constants/products';
 import { createCheckoutSession } from '../../../lib/apiClient';
 import { writeStorage } from '../../../lib/storage';
+import { useCart } from '../../cart/CartProvider';
 import { formatCurrency } from '../../../utils/currency';
 
 const initialForm = {
-  firstName: '',
-  lastName: '',
+  fullName: '',
   email: '',
   phone: '',
-  street: '',
+  address: '',
   city: '',
   postalCode: '',
-  country: 'Spain',
-  notes: '',
+  province: '',
+  comments: '',
 };
 
 export function CheckoutPage() {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const { items, cartTotal, clearCart } = useCart();
   const [formValues, setFormValues] = useState(initialForm);
-  const [selectedSlug, setSelectedSlug] = useState(searchParams.get('product') ?? products[0].slug);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const selectedProduct = getProductBySlug(selectedSlug) ?? products[0];
 
   useEffect(() => {
     document.title = 'ButaKeando | Checkout';
   }, []);
-
-  useEffect(() => {
-    const slugFromQuery = searchParams.get('product');
-    if (slugFromQuery && slugFromQuery !== selectedSlug) {
-      setSelectedSlug(slugFromQuery);
-    }
-  }, [searchParams, selectedSlug]);
 
   const handleFieldChange = (event) => {
     const { name, value } = event.target;
@@ -52,28 +41,36 @@ export function CheckoutPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!items.length) {
+      showToast({
+        tone: 'warning',
+        title: 'Carrito vacio',
+        message: 'Anade al menos un producto antes de continuar al checkout.',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     const payload = {
-      items: [
-        {
-          product_id: selectedProduct.id,
-          product_name: selectedProduct.name,
-          quantity: 1,
-          unit_price: selectedProduct.price,
-        },
-      ],
+      items: items.map((item) => ({
+        product_id: item.id,
+        product_name: item.name,
+        quantity: item.quantity,
+        unit_price: item.price,
+      })),
       customer: {
-        name: `${formValues.firstName} ${formValues.lastName}`.trim(),
+        name: formValues.fullName,
         email: formValues.email,
         phone: formValues.phone,
       },
       shipping_address: {
-        line_1: formValues.street,
+        line_1: formValues.address,
         city: formValues.city,
         postal_code: formValues.postalCode,
-        country: formValues.country,
-        notes: formValues.notes,
+        country: 'Espana',
+        notes: `Provincia: ${formValues.province}. Comentarios: ${formValues.comments || 'Sin comentarios'}`,
       },
     };
 
@@ -81,23 +78,32 @@ export function CheckoutPage() {
       const session = await createCheckoutSession(payload);
 
       writeStorage('butakeando:last-order', {
-        product: selectedProduct,
+        items,
         customer: payload.customer,
-        shipping: payload.shipping_address,
+        shipping: {
+          address: formValues.address,
+          city: formValues.city,
+          postalCode: formValues.postalCode,
+          province: formValues.province,
+          comments: formValues.comments,
+        },
+        total: cartTotal,
         session,
       });
 
+      clearCart();
+
       showToast({
         tone: 'success',
-        title: 'Checkout session prepared',
-        message: session.message ?? 'Shipping data captured and payment handoff ready.',
+        title: 'Pedido preparado',
+        message: 'Tu checkout mock se ha completado correctamente.',
       });
 
-      navigate(`/order/success?reference=${session.reference}&product=${selectedProduct.slug}`);
+      navigate(`/pedido/confirmado?reference=${session.reference}`);
     } catch (error) {
       showToast({
         tone: 'error',
-        title: 'Checkout could not start',
+        title: 'No se pudo preparar el pedido',
         message: error.message,
       });
     } finally {
@@ -105,81 +111,88 @@ export function CheckoutPage() {
     }
   };
 
+  if (!items.length) {
+    return (
+      <div className="store-page">
+        <SectionContainer>
+          <PageContainer>
+            <Card className="shop-empty">
+              <h1>No hay productos para tramitar</h1>
+              <p>Aun no has anadido productos al carrito. Empieza por el catalogo.</p>
+              <Button to="/catalogo">Ir al catalogo</Button>
+            </Card>
+          </PageContainer>
+        </SectionContainer>
+      </div>
+    );
+  }
+
   return (
-    <SectionContainer>
-      <PageContainer className="detail-grid checkout-layout">
-        <Card className="checkout-card">
-          <h1>Simple checkout foundation</h1>
-          <p>Shipping details captured here. Hosted payment handoff and internal email notification connect through backend seam.</p>
+    <div className="store-page">
+      <SectionContainer>
+        <PageContainer className="store-shell">
+          <div className="store-heading">
+            <span className="store-heading__eyebrow">Checkout</span>
+            <h1>Una primera experiencia visual de compra, clara y premium.</h1>
+            <p>Este formulario todavia no cobra, pero ya dibuja el flujo que luego conectaremos a pago real.</p>
+          </div>
 
-          <form className="checkout-form" onSubmit={handleSubmit}>
-            <Select
-              label="Product"
-              name="product"
-              onChange={(event) => setSelectedSlug(event.target.value)}
-              options={products.map((product) => ({
-                value: product.slug,
-                label: `${product.name} — ${formatCurrency(product.price)}`,
-              }))}
-              value={selectedSlug}
-            />
+          <div className="checkout-layout checkout-layout--store">
+            <Card className="checkout-card checkout-card--store">
+              <form className="checkout-form" onSubmit={handleSubmit}>
+                <Input label="Nombre y apellidos" name="fullName" onChange={handleFieldChange} required value={formValues.fullName} />
+                <div className="form-row">
+                  <Input label="Email" name="email" onChange={handleFieldChange} required type="email" value={formValues.email} />
+                  <Input label="Telefono" name="phone" onChange={handleFieldChange} required value={formValues.phone} />
+                </div>
+                <Input label="Direccion" name="address" onChange={handleFieldChange} required value={formValues.address} />
+                <div className="form-row">
+                  <Input label="Ciudad" name="city" onChange={handleFieldChange} required value={formValues.city} />
+                  <Input label="Codigo postal" name="postalCode" onChange={handleFieldChange} required value={formValues.postalCode} />
+                </div>
+                <Input label="Provincia" name="province" onChange={handleFieldChange} required value={formValues.province} />
+                <Textarea
+                  helper="Indica acabados, horario de entrega o cualquier detalle del pedido."
+                  label="Comentarios del pedido"
+                  name="comments"
+                  onChange={handleFieldChange}
+                  rows="5"
+                  value={formValues.comments}
+                />
 
-            <div className="form-row">
-              <Input label="First name" name="firstName" onChange={handleFieldChange} required value={formValues.firstName} />
-              <Input label="Last name" name="lastName" onChange={handleFieldChange} required value={formValues.lastName} />
+                <Button block disabled={isSubmitting} type="submit">
+                  {isSubmitting ? 'Preparando pedido...' : 'Finalizar pedido'}
+                </Button>
+              </form>
+            </Card>
+
+            <div className="checkout-sidebar">
+              <Card className="shop-summary-card">
+                <span className="shop-summary-card__eyebrow">Resumen del pedido</span>
+                <h2>Productos seleccionados</h2>
+                <div className="summary-list--store">
+                  {items.map((item) => (
+                    <div key={item.id} className="summary-list__row">
+                      <span>
+                        {item.name} x{item.quantity}
+                      </span>
+                      <strong>{formatCurrency(item.price * item.quantity)}</strong>
+                    </div>
+                  ))}
+                </div>
+                <div className="shop-summary-card__total">
+                  <span>Total</span>
+                  <strong>{formatCurrency(cartTotal)}</strong>
+                </div>
+              </Card>
+
+              <Button to="/carrito" tone="secondary">
+                Volver al carrito
+              </Button>
             </div>
-
-            <div className="form-row">
-              <Input label="Email" name="email" onChange={handleFieldChange} required type="email" value={formValues.email} />
-              <Input label="Phone" name="phone" onChange={handleFieldChange} value={formValues.phone} />
-            </div>
-
-            <Input label="Street address" name="street" onChange={handleFieldChange} required value={formValues.street} />
-
-            <div className="form-row">
-              <Input label="City" name="city" onChange={handleFieldChange} required value={formValues.city} />
-              <Input label="Postal code" name="postalCode" onChange={handleFieldChange} required value={formValues.postalCode} />
-            </div>
-
-            <Input label="Country" name="country" onChange={handleFieldChange} required value={formValues.country} />
-
-            <Textarea
-              helper="Optional delivery note for internal reference."
-              label="Notes"
-              name="notes"
-              onChange={handleFieldChange}
-              rows="4"
-              value={formValues.notes}
-            />
-
-            <Button block disabled={isSubmitting} type="submit">
-              {isSubmitting ? 'Preparing checkout...' : 'Continue to payment'}
-            </Button>
-          </form>
-        </Card>
-
-        <div className="checkout-sidebar">
-          <Card className="summary-card">
-            <span className="summary-card__eyebrow">Order summary</span>
-            <h2>{selectedProduct.name}</h2>
-            <p>{selectedProduct.tagline}</p>
-            <strong>{formatCurrency(selectedProduct.price)}</strong>
-          </Card>
-
-          <Card className="summary-card">
-            <span className="summary-card__eyebrow">Backend expectation</span>
-            <ul className="summary-list">
-              <li>Create checkout session on backend.</li>
-              <li>Confirm payment through trusted backend step or webhook.</li>
-              <li>Trigger internal email with customer and shipping details.</li>
-            </ul>
-          </Card>
-
-          <Button to={`/product/${selectedProduct.slug}`} tone="secondary">
-            Review product again
-          </Button>
-        </div>
-      </PageContainer>
-    </SectionContainer>
+          </div>
+        </PageContainer>
+      </SectionContainer>
+    </div>
   );
 }

@@ -1,14 +1,29 @@
+import { NavLink } from 'react-router-dom';
 import { PageContainer } from './PageContainer';
+import { primaryNavigationItems } from '../../constants/navigation';
 
 export function Footer() {
   return (
     <footer className="site-footer">
       <PageContainer className="site-footer__inner">
-        <div>
+        <div className="site-footer__brand">
           <strong>ButaKeando</strong>
-          <p>Private commercial storefront foundation for premium seating and upholstered furniture.</p>
+          <p>Butacas y sillones con una estetica premium, calida y pensada para hogares con personalidad.</p>
         </div>
-        <p className="site-footer__meta">Modern vintage direction. Checkout and notifications prepared for hosted payment flow.</p>
+
+        <nav aria-label="Footer" className="site-footer__nav">
+          {primaryNavigationItems.map((item) => (
+            <NavLink key={item.to} to={item.to}>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="site-footer__contact">
+          <strong>Contacto</strong>
+          <a href="mailto:hola@butakeando.es">hola@butakeando.es</a>
+          <span>Sevilla, Espana</span>
+        </div>
       </PageContainer>
     </footer>
   );

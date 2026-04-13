@@ -6,18 +6,20 @@ import { Card } from '../../../components/ui/Card';
 
 export function NotFoundPage() {
   useEffect(() => {
-    document.title = 'ButaKeando | Page not found';
+    document.title = 'ButaKeando | Pagina no encontrada';
   }, []);
 
   return (
-    <SectionContainer>
-      <PageContainer>
-        <Card className="empty-state">
-          <h1>Page not found</h1>
-          <p>Route does not exist in current storefront scaffold.</p>
-          <Button to="/">Return home</Button>
-        </Card>
-      </PageContainer>
-    </SectionContainer>
+    <div className="store-page">
+      <SectionContainer>
+        <PageContainer>
+          <Card className="shop-empty">
+            <h1>Pagina no encontrada</h1>
+            <p>La ruta que buscas no existe dentro de la version actual de la tienda.</p>
+            <Button to="/">Volver al inicio</Button>
+          </Card>
+        </PageContainer>
+      </SectionContainer>
+    </div>
   );
 }
