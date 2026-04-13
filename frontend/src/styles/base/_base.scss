@@ -1,0 +1,20 @@
+body {
+  background:
+    radial-gradient(circle at top, rgba(184, 145, 70, 0.15), transparent 28%),
+    linear-gradient(180deg, #f6f0e8 0%, #efe6db 38%, #f8f4ef 100%);
+  color: var(--color-ink-900);
+  font-family: var(--font-body);
+  line-height: var(--line-body);
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(184, 145, 70, 0.22);
+}
