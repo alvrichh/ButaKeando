@@ -1,4 +1,4 @@
-# ButaKeando
+<img width="541" height="147" alt="butaKeando inserted" src="https://github.com/user-attachments/assets/476b5b84-29cb-4720-9b9e-1d3dd2e7907c" />
 
 Private commercial storefront for premium armchairs, sofas, and upholstered furniture.
 
