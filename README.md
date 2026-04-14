@@ -2,6 +2,8 @@
 
 Private commercial storefront for premium armchairs, sofas, and upholstered furniture.
 
+https://vercel.com/alvrichhs-projects/buta-keando
+
 ## Production shape
 
 Project now ready for single-app deploy on Render:
