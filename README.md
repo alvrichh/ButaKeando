@@ -165,6 +165,46 @@ These already come from blueprint/runtime:
 - `FRONTEND_DIST_PATH=/app/frontend/dist`
 - `AUTO_CREATE_TABLES=false`
 
+## Railway deploy
+
+Project also supports Railway with root [railway.toml](/c:/Users/Anonymus/Desktop/PROYECTOS/Butakeando%20-%20jose%20cabeza/ButaKeando/railway.toml:1).
+
+Recommended Railway flow:
+
+1. Create new project from GitHub repo.
+2. Add PostgreSQL service in same project.
+3. Open web service settings and generate public domain.
+4. Railway will use root `Dockerfile`.
+5. Set these variables in web service:
+
+- `APP_ENV=production`
+- `API_PREFIX=/api/v1`
+- `SERVE_FRONTEND=true`
+- `FRONTEND_DIST_PATH=/app/frontend/dist`
+- `AUTO_CREATE_TABLES=false`
+- `FRONTEND_URL=https://your-railway-domain.up.railway.app`
+- `CORS_ALLOW_ORIGINS=https://your-railway-domain.up.railway.app`
+- `DATABASE_URL` from Railway PostgreSQL
+- `STRIPE_SECRET_KEY`
+- `STRIPE_PUBLISHABLE_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `ORDER_NOTIFICATION_EMAIL`
+- `EMAIL_FROM`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USER`
+- `SMTP_PASSWORD`
+
+Railway healthcheck path:
+
+- `/health`
+
+Railway uses container command already defined in `Dockerfile`:
+
+```bash
+alembic -c alembic.ini upgrade head && python run.py
+```
+
 ## PostgreSQL and migrations
 
 Project now includes Alembic.
