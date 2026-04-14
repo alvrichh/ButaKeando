@@ -61,17 +61,20 @@ export function CheckoutPage() {
         unit_price: item.price,
       })),
       customer: {
-        name: formValues.fullName,
+        full_name: formValues.fullName,
         email: formValues.email,
         phone: formValues.phone,
       },
       shipping_address: {
-        line_1: formValues.address,
+        address_line: formValues.address,
         city: formValues.city,
         postal_code: formValues.postalCode,
-        country: 'Espana',
-        notes: `Provincia: ${formValues.province}. Comentarios: ${formValues.comments || 'Sin comentarios'}`,
+        province: formValues.province,
+        country: 'ES',
       },
+      comments: formValues.comments,
+      total: cartTotal,
+      currency: 'eur',
     };
 
     try {
@@ -91,12 +94,17 @@ export function CheckoutPage() {
         session,
       });
 
+      if (session.checkout_url) {
+        window.location.assign(session.checkout_url);
+        return;
+      }
+
       clearCart();
 
       showToast({
         tone: 'success',
         title: 'Pedido preparado',
-        message: 'Tu checkout mock se ha completado correctamente.',
+        message: 'Sesion mock preparada. Configura API para usar pago real.',
       });
 
       navigate(`/pedido/confirmado?reference=${session.reference}`);
@@ -134,7 +142,7 @@ export function CheckoutPage() {
           <div className="store-heading">
             <span className="store-heading__eyebrow">Checkout</span>
             <h1>Una primera experiencia visual de compra, clara y premium.</h1>
-            <p>Este formulario todavia no cobra, pero ya dibuja el flujo que luego conectaremos a pago real.</p>
+            <p>Este formulario ya puede abrir Stripe Checkout real cuando conectes tu backend desplegado.</p>
           </div>
 
           <div className="checkout-layout checkout-layout--store">
@@ -161,7 +169,7 @@ export function CheckoutPage() {
                 />
 
                 <Button block disabled={isSubmitting} type="submit">
-                  {isSubmitting ? 'Preparando pedido...' : 'Finalizar pedido'}
+                  {isSubmitting ? 'Preparando pago...' : 'Continuar a Stripe Checkout'}
                 </Button>
               </form>
             </Card>

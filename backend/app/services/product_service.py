@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+from decimal import Decimal
+
+from app.schemas.checkout import CheckoutItemRequest
 from app.schemas.product import Product
 
 
@@ -56,9 +60,58 @@ PRODUCTS = [
 ]
 
 
+@dataclass(frozen=True)
+class ResolvedCartItem:
+  product_id: str
+  product_name: str
+  quantity: int
+  unit_amount: int
+  subtotal: int
+
+
+def price_to_cents(price: float | Decimal) -> int:
+  return int(round(float(price) * 100))
+
+
 def list_products() -> list[Product]:
   return PRODUCTS
 
 
 def get_product_by_slug(slug: str) -> Product | None:
   return next((product for product in PRODUCTS if product.slug == slug), None)
+
+
+def get_product_by_id(product_id: str) -> Product | None:
+  return next((product for product in PRODUCTS if product.id == product_id), None)
+
+
+def resolve_cart_items(items: list[CheckoutItemRequest]) -> list[ResolvedCartItem]:
+  resolved_items: list[ResolvedCartItem] = []
+
+  for item in items:
+    product = get_product_by_id(item.product_id)
+    if not product:
+      raise ValueError(f'Unknown product_id: {item.product_id}')
+
+    if item.product_name and item.product_name != product.name:
+      raise ValueError(f'Product name mismatch for {item.product_id}.')
+
+    expected_unit_amount = price_to_cents(product.price)
+    if item.unit_price is not None and price_to_cents(item.unit_price) != expected_unit_amount:
+      raise ValueError(f'Product price mismatch for {item.product_id}.')
+
+    resolved_items.append(
+      ResolvedCartItem(
+        product_id=product.id,
+        product_name=product.name,
+        quantity=item.quantity,
+        unit_amount=expected_unit_amount,
+        subtotal=expected_unit_amount * item.quantity,
+      )
+    )
+
+  return resolved_items
+
+
+def calculate_total_cents(items: list[ResolvedCartItem]) -> int:
+  return sum(item.subtotal for item in items)

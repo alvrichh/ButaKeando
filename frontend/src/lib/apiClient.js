@@ -5,11 +5,18 @@ function buildUrl(path) {
   return `${appConfig.apiBaseUrl}${normalizedPath}`;
 }
 
-export async function request(path, options = {}) {
-  if (!appConfig.apiBaseUrl) {
-    throw new Error('VITE_API_BASE_URL missing. Configure frontend environment for live API calls.');
-  }
+async function buildError(response) {
+  const text = await response.text();
 
+  try {
+    const parsed = JSON.parse(text);
+    return parsed.detail || text || `Request failed with status ${response.status}`;
+  } catch {
+    return text || `Request failed with status ${response.status}`;
+  }
+}
+
+export async function request(path, options = {}) {
   const response = await fetch(buildUrl(path), {
     headers: {
       'Content-Type': 'application/json',
@@ -20,29 +27,14 @@ export async function request(path, options = {}) {
   });
 
   if (!response.ok) {
-    const message = await response.text();
-    throw new Error(message || `Request failed with status ${response.status}`);
+    throw new Error(await buildError(response));
   }
 
   return response.json();
 }
 
 export async function createCheckoutSession(payload) {
-  if (!appConfig.apiBaseUrl) {
-    await new Promise((resolve) => window.setTimeout(resolve, 450));
-
-    return {
-      reference: `BTK-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
-      provider: 'mock',
-      payment_status: 'pending_redirect',
-      checkout_url: null,
-      email_notification_ready: true,
-      message: 'Sesion mock creada. Podras conectar este flujo a backend o pasarela real mas adelante.',
-      draft: payload,
-    };
-  }
-
-  return request('/checkout/sessions', {
+  return request('/checkout/session', {
     method: 'POST',
     body: payload,
   });

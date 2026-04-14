@@ -6,15 +6,22 @@ import { SectionContainer } from '../../../components/layout/SectionContainer';
 import { Card } from '../../../components/ui/Card';
 import { readStorage } from '../../../lib/storage';
 import { formatCurrency } from '../../../utils/currency';
+import { useCart } from '../../cart/CartProvider';
 
 export function OrderSuccessPage() {
   const [searchParams] = useSearchParams();
   const reference = searchParams.get('reference') ?? 'BTK-REF-PENDIENTE';
+  const sessionId = searchParams.get('session_id');
   const lastOrder = readStorage('butakeando:last-order');
+  const { clearCart } = useCart();
 
   useEffect(() => {
     document.title = 'ButaKeando | Pedido confirmado';
-  }, []);
+
+    if (reference || sessionId) {
+      clearCart();
+    }
+  }, [clearCart, reference, sessionId]);
 
   return (
     <div className="store-page">
@@ -22,11 +29,11 @@ export function OrderSuccessPage() {
         <PageContainer className="store-shell">
           <div className="success-layout">
             <Card className="success-card success-card--primary">
-              <span className="shop-summary-card__eyebrow">Pedido recibido</span>
+              <span className="shop-summary-card__eyebrow">Pago recibido</span>
               <h1>Referencia {reference}</h1>
               <p>
-                El recorrido visual de compra se ha completado. El siguiente paso real sera conectar este flujo con
-                backend, pago y notificaciones.
+                Stripe ha devuelto al cliente correctamente. El backend termina confirmacion final, guardado y email
+                mediante webhook seguro.
               </p>
               <div className="success-card__actions">
                 <Button to="/catalogo">Seguir viendo productos</Button>
@@ -38,7 +45,7 @@ export function OrderSuccessPage() {
 
             <Card className="success-card">
               <span className="shop-summary-card__eyebrow">Resumen guardado</span>
-              <h2>{lastOrder?.customer?.name || 'Cliente ButaKeando'}</h2>
+              <h2>{lastOrder?.customer?.full_name || lastOrder?.customer?.name || 'Cliente ButaKeando'}</h2>
               <div className="summary-list--store">
                 {(lastOrder?.items || []).map((item) => (
                   <div key={item.id} className="summary-list__row">
