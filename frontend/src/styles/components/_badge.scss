@@ -1,18 +1,22 @@
 .badge {
   align-items: center;
-  background: rgba(18, 14, 12, 0.08);
-  border: 1px solid rgba(18, 14, 12, 0.08);
+  background: rgba(247, 241, 234, 0.06);
+  border: 1px solid rgba(247, 241, 234, 0.12);
   border-radius: var(--radius-pill);
-  color: var(--color-ink-700);
+  color: var(--color-text);
   display: inline-flex;
   font-size: var(--font-size-xs);
-  letter-spacing: 0.08em;
-  padding: 0.38rem 0.8rem;
+  font-weight: 500;
+  justify-self: start;
+  letter-spacing: 0.1em;
+  padding: 0.32rem 0.8rem;
   text-transform: uppercase;
+  white-space: nowrap;
+  width: fit-content;
 }
 
 .badge--gold {
-  background: rgba(184, 145, 70, 0.12);
-  border-color: rgba(184, 145, 70, 0.2);
-  color: #7a5d26;
+  background: var(--color-gold-tint);
+  border-color: var(--color-border-gold-strong);
+  color: var(--color-gold-300);
 }

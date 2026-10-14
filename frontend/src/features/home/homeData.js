@@ -1,34 +1,33 @@
-import logoDark from '../../assets/images/logos/butakeando-logo-dark.png';
-import logoTransparent from '../../assets/images/logos/butakeando-logo-transparent.png';
+export const heroContent = {
+  eyebrow: 'Butacas y sillones con estilo',
+  title: 'La elegancia de un salón empieza en el asiento correcto.',
+  subtitle:
+    'Piezas tapizadas con alma vintage y acabado premium, elegidas para el descanso diario y para dar carácter a tu hogar.',
+  primaryCta: { to: '/catalogo', label: 'Ver catálogo' },
+  secondaryCta: { to: '/contacto', label: 'Asesoramiento personal' },
+  featuredSlug: 'butaca-vintage-retro',
+};
+
+export const trustHighlights = [
+  { icon: 'truck', title: 'Envío a toda España', body: 'Coordinamos la entrega contigo.' },
+  { icon: 'shield', title: 'Pago seguro', body: 'Procesado por Stripe.' },
+  { icon: 'mail', title: 'Atención personal', body: 'Te ayudamos a elegir.' },
+];
 
 export const brandHighlights = [
   {
+    icon: 'sparkle',
     title: 'Comodidad real',
-    body: 'Seleccionamos butacas y sillones pensados para el descanso diario, con presencia elegante y sensacion acogedora.',
+    body: 'Seleccionamos butacas y sillones pensados para el descanso diario, con presencia elegante y sensación acogedora.',
   },
   {
-    title: 'Diseno con caracter',
-    body: 'Lineas modernas, inspiracion calida y modelos que encajan en hogares, estudios y espacios con identidad propia.',
+    icon: 'check',
+    title: 'Diseño con carácter',
+    body: 'Líneas modernas e inspiración cálida en modelos que encajan en hogares, estudios y espacios con identidad propia.',
   },
   {
-    title: 'Calidad que transmite confianza',
-    body: 'Queremos que la marca se sienta solida desde el primer vistazo: materiales, acabados y estetica cuidada.',
+    icon: 'shield',
+    title: 'Calidad que se nota',
+    body: 'Materiales, acabados y estructura cuidados para que cada pieza te acompañe durante años.',
   },
 ];
-
-export const brandMetrics = [
-  { value: '4', label: 'Modelos destacados' },
-  { value: 'Premium', label: 'Direccion estetica' },
-  { value: 'Hecho para', label: 'Confort y diseno' },
-];
-
-export const heroContent = {
-  badge: 'Butacas y sillones con estilo',
-  title: 'La primera impresion de un salon elegante empieza en el asiento correcto.',
-  subtitle:
-    'ButaKeando nace para reunir comodidad, diseno y una estetica premium en una tienda visual pensada para crecer hacia e-commerce real.',
-  primaryCta: { to: '/catalogo', label: 'Ver catalogo' },
-  secondaryCta: { to: '/contacto', label: 'Contactar' },
-  logoDark,
-  logoTransparent,
-};

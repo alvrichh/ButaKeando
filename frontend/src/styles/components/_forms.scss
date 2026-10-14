@@ -1,7 +1,24 @@
 .checkout-form {
   display: grid;
+  gap: var(--space-xl);
+}
+
+.checkout-form__group {
+  border: 0;
+  display: grid;
   gap: var(--space-md);
-  margin-top: var(--space-lg);
+  min-width: 0;
+  padding: 0;
+}
+
+.checkout-form__group legend {
+  color: var(--color-gold-300);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  margin-bottom: var(--space-md);
+  padding: 0;
+  text-transform: uppercase;
 }
 
 .form-row {
@@ -16,37 +33,79 @@
 }
 
 .field__label {
-  color: rgba(247, 241, 234, 0.9);
+  color: var(--color-paper);
   font-size: var(--font-size-sm);
-  font-weight: 600;
+  font-weight: 500;
+}
+
+.field__required {
+  color: var(--color-gold-400);
+  margin-left: 0.2rem;
 }
 
 .field__control {
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(184, 145, 70, 0.12);
-  border-radius: var(--radius-md);
-  color: var(--color-ink-900);
+  background: rgba(255, 253, 249, 0.04);
+  border: 1px solid rgba(247, 241, 234, 0.18);
+  border-radius: var(--radius-sm);
+  color: var(--color-white);
+  // 16px minimum avoids iOS zoom on focus.
+  font-size: var(--font-size-md);
   min-height: 3rem;
-  outline: none;
-  padding: 0.85rem 1rem;
+  padding: 0.75rem 1rem;
   transition:
     border-color var(--ease-standard),
-    box-shadow var(--ease-standard);
+    box-shadow var(--ease-standard),
+    background-color var(--ease-standard);
+  width: 100%;
 }
 
-.field__control:focus {
-  border-color: rgba(184, 145, 70, 0.72);
-  box-shadow: 0 0 0 4px rgba(184, 145, 70, 0.12);
+.field__control::placeholder {
+  color: var(--color-text-muted);
+}
+
+.field__control:hover {
+  border-color: var(--color-border-gold-strong);
+}
+
+.field__control:focus-visible {
+  background: rgba(255, 253, 249, 0.07);
+  border-color: var(--color-gold-400);
+  box-shadow: 0 0 0 3px rgba(208, 171, 99, 0.22);
+  outline: none;
+}
+
+.field--invalid .field__control {
+  border-color: var(--color-error);
+}
+
+.field--invalid .field__control:focus-visible {
+  box-shadow: 0 0 0 3px rgba(196, 106, 94, 0.25);
 }
 
 .field__control--textarea {
-  min-height: 7.5rem;
+  min-height: 7rem;
   resize: vertical;
 }
 
 .field__help {
-  color: rgba(247, 241, 234, 0.6);
+  color: var(--color-text-muted);
   font-size: var(--font-size-xs);
+}
+
+.field--invalid .field__help {
+  color: #e39a8f;
+}
+
+select.field__control {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-gold-300) 50%),
+    linear-gradient(135deg, var(--color-gold-300) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.15rem) 50%,
+    calc(100% - 0.8rem) 50%;
+  background-repeat: no-repeat;
+  background-size: 0.35rem 0.35rem;
+  padding-right: 2.5rem;
 }
 
 @media (max-width: 720px) {

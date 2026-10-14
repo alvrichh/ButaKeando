@@ -1,15 +1,17 @@
-export function Select({ label, helper, error, options = [], className = '', ...props }) {
+import { Field } from './Field';
+
+export function Select({ label, helper, error, required, options = [], className = '', ...props }) {
   return (
-    <label className={['field', className].filter(Boolean).join(' ')}>
-      <span className="field__label">{label}</span>
-      <select className="field__control" {...props}>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      {(helper || error) && <span className="field__help">{error || helper}</span>}
-    </label>
+    <Field className={className} error={error} helper={helper} label={label} required={required}>
+      {(controlProps) => (
+        <select className="field__control" {...controlProps} {...props}>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      )}
+    </Field>
   );
 }

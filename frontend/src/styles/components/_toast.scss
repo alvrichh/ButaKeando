@@ -2,43 +2,89 @@
   bottom: var(--space-lg);
   display: grid;
   gap: var(--space-sm);
+  pointer-events: none;
   position: fixed;
   right: var(--space-lg);
-  width: min(22rem, calc(100vw - 2rem));
+  width: min(23rem, calc(100vw - 2rem));
   z-index: var(--z-toast);
 }
 
 .toast {
+  --toast-accent: var(--color-info);
+
   align-items: start;
-  background: rgba(15, 12, 10, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-left: 4px solid var(--color-info);
+  animation: toast-slide-in var(--ease-slow) both;
+  background: rgba(17, 13, 11, 0.97);
+  border: 1px solid var(--color-border-gold);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-overlay);
   color: var(--color-paper);
   display: flex;
   gap: var(--space-sm);
-  justify-content: space-between;
-  padding: 1rem 1rem 0.95rem;
+  padding: 0.85rem 0.5rem 0.85rem 1rem;
+  pointer-events: auto;
+}
+
+.toast__icon {
+  align-items: center;
+  background: color-mix(in srgb, var(--toast-accent) 18%, transparent);
+  border-radius: var(--radius-pill);
+  color: var(--toast-accent);
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 2rem;
+  justify-content: center;
+  margin-top: 0.1rem;
+  width: 2rem;
+}
+
+.toast__content {
+  flex: 1;
+  min-width: 0;
+  padding-top: 0.2rem;
+}
+
+.toast strong {
+  color: var(--color-white);
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
 }
 
 .toast p {
-  color: rgba(247, 241, 234, 0.74);
-  margin-top: 0.2rem;
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  margin-top: 0.15rem;
 }
 
 .toast--success {
-  border-left-color: var(--color-success);
+  --toast-accent: var(--color-success);
 }
 
 .toast--error {
-  border-left-color: var(--color-error);
+  --toast-accent: var(--color-error);
 }
 
 .toast--warning {
-  border-left-color: var(--color-warning);
+  --toast-accent: var(--color-warning);
 }
 
 .toast--info {
-  border-left-color: var(--color-info);
+  --toast-accent: var(--color-info);
+}
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@media (max-width: 560px) {
+  .toast-viewport {
+    bottom: var(--space-md);
+    left: var(--space-md);
+    right: var(--space-md);
+    width: auto;
+  }
 }

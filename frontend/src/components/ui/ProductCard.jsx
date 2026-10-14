@@ -1,38 +1,37 @@
+import { Link } from 'react-router-dom';
 import { Badge } from '../common/Badge';
-import { Button } from '../common/Button';
+import { Icon } from '../common/Icon';
 import { Card } from './Card';
+import { ProductMedia } from './ProductMedia';
 import { formatCurrency } from '../../utils/currency';
 
-export function ProductCard({ product }) {
+export function ProductCard({ product, compact = false }) {
+  const productUrl = `/producto/${product.slug}`;
+
   return (
-    <Card className="product-card product-card--store">
-      {product.image ? (
-        <div className="product-card__media">
-          <img alt={product.imageAlt} src={product.image} />
-        </div>
-      ) : (
-        <div className={`product-card__placeholder product-card__placeholder--${product.tone}`}>
-          <span>{product.category}</span>
-        </div>
-      )}
+    <Card className={['product-card', compact && 'product-card--compact'].filter(Boolean).join(' ')}>
+      <ProductMedia className="product-card__media" product={product} showName />
 
       <div className="product-card__content">
         <div className="product-card__heading">
           <Badge tone="gold">{product.category}</Badge>
           <span className="product-card__availability">{product.availability}</span>
         </div>
-        <h3>{product.name}</h3>
-        <p>{product.shortDescription}</p>
+        <h3>
+          {/* The stretched link makes the whole card clickable while keeping one tab stop. */}
+          <Link className="product-card__link" to={productUrl}>
+            {product.name}
+          </Link>
+        </h3>
+        {!compact ? <p>{product.shortDescription}</p> : null}
       </div>
 
       <div className="product-card__footer">
-        <div>
-          <small>Precio</small>
-          <strong>{formatCurrency(product.price)}</strong>
-        </div>
-        <Button to={`/producto/${product.slug}`} tone="secondary">
+        <strong className="product-card__price">{formatCurrency(product.price)}</strong>
+        <span aria-hidden="true" className="product-card__cta">
           Ver detalle
-        </Button>
+          <Icon name="arrowRight" size={16} />
+        </span>
       </div>
     </Card>
   );

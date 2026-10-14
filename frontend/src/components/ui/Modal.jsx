@@ -1,11 +1,61 @@
-import { createContext, useContext, useEffect, useId, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '../common/Button';
+import { Icon } from '../common/Icon';
 
 const ModalContext = createContext(null);
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 function ModalRoot({ modal, onClose }) {
   const titleId = useId();
+  const descriptionId = useId();
+  const shellRef = useRef(null);
+
+  useEffect(() => {
+    if (!modal || !shellRef.current) {
+      return undefined;
+    }
+
+    const previouslyFocused = document.activeElement;
+    const shell = shellRef.current;
+    shell.focus();
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape' && modal.dismissOnEscape !== false) {
+        onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const items = Array.from(shell.querySelectorAll(FOCUSABLE_SELECTOR));
+      if (!items.length) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = items[0];
+      const last = items[items.length - 1];
+
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === shell)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      previouslyFocused?.focus?.();
+    };
+  }, [modal, onClose]);
 
   if (!modal || typeof document === 'undefined') {
     return null;
@@ -19,21 +69,29 @@ function ModalRoot({ modal, onClose }) {
 
   return createPortal(
     <div className="modal-root" role="presentation">
-      <button aria-label="Close modal overlay" className="modal-overlay" onClick={handleOverlayClick} type="button" />
+      <div aria-hidden="true" className="modal-overlay" onClick={handleOverlayClick} />
       <div
+        ref={shellRef}
+        aria-describedby={modal.description ? descriptionId : undefined}
+        aria-label={modal.title ? undefined : modal.ariaLabel}
         aria-labelledby={modal.title ? titleId : undefined}
         aria-modal="true"
         className={['modal-shell', `modal-shell--${modal.size ?? 'medium'}`].join(' ')}
         role="dialog"
+        tabIndex={-1}
       >
-        <button aria-label="Close modal" className="modal-close" onClick={onClose} type="button">
-          +
+        <button aria-label="Cerrar ventana" className="modal-close" onClick={onClose} type="button">
+          <Icon name="close" size={18} />
         </button>
 
+        {modal.icon && <div className="modal-icon">{modal.icon}</div>}
         {modal.eyebrow && <span className="modal-eyebrow">{modal.eyebrow}</span>}
         {modal.title && <h2 id={titleId}>{modal.title}</h2>}
-        {modal.description && <p className="modal-description">{modal.description}</p>}
-        {modal.icon && <div className="modal-icon">{modal.icon}</div>}
+        {modal.description && (
+          <p className="modal-description" id={descriptionId}>
+            {modal.description}
+          </p>
+        )}
         {modal.content && <div className="modal-body">{modal.content}</div>}
 
         {modal.actions?.length ? (
@@ -41,12 +99,14 @@ function ModalRoot({ modal, onClose }) {
             {modal.actions.map((action) => (
               <Button
                 key={action.label}
+                href={action.href}
                 onClick={() => {
                   action.onClick?.();
                   if (action.closeOnClick !== false) {
                     onClose();
                   }
                 }}
+                to={action.to}
                 tone={action.tone ?? 'secondary'}
                 type={action.type ?? 'button'}
               >
@@ -64,39 +124,25 @@ function ModalRoot({ modal, onClose }) {
 export function ModalProvider({ children }) {
   const [modal, setModal] = useState(null);
 
-  const openModal = (nextModal) => {
+  const openModal = useCallback((nextModal) => {
     setModal({
       closeOnOverlay: true,
       dismissOnEscape: true,
       ...nextModal,
     });
-  };
+  }, []);
 
-  const closeModal = () => setModal(null);
+  const closeModal = useCallback(() => setModal(null), []);
 
   useEffect(() => {
-    if (!modal) {
-      document.body.classList.remove('modal-open');
-      return undefined;
-    }
-
-    document.body.classList.add('modal-open');
-
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape' && modal.dismissOnEscape !== false) {
-        closeModal();
-      }
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-      document.body.classList.remove('modal-open');
-    };
+    document.body.classList.toggle('modal-open', Boolean(modal));
+    return () => document.body.classList.remove('modal-open');
   }, [modal]);
 
+  const value = useMemo(() => ({ modal, openModal, closeModal }), [modal, openModal, closeModal]);
+
   return (
-    <ModalContext.Provider value={{ modal, openModal, closeModal }}>
+    <ModalContext.Provider value={value}>
       {children}
       <ModalRoot modal={modal} onClose={closeModal} />
     </ModalContext.Provider>

@@ -1,14 +1,26 @@
-export function QuantitySelector({ value, onChange, min = 1 }) {
-  const safeValue = Math.max(min, value);
+import { Icon } from './Icon';
+
+export function QuantitySelector({ value, onChange, min = 1, max = 10, label = 'Cantidad' }) {
+  const safeValue = Math.min(max, Math.max(min, value));
 
   return (
-    <div className="quantity-selector">
-      <button aria-label="Reducir cantidad" onClick={() => onChange(Math.max(min, safeValue - 1))} type="button">
-        -
+    <div aria-label={label} className="quantity-selector" role="group">
+      <button
+        aria-label="Reducir cantidad"
+        disabled={safeValue <= min}
+        onClick={() => onChange(safeValue - 1)}
+        type="button"
+      >
+        <Icon name="minus" size={16} />
       </button>
-      <span>{safeValue}</span>
-      <button aria-label="Aumentar cantidad" onClick={() => onChange(safeValue + 1)} type="button">
-        +
+      <output aria-live="polite">{safeValue}</output>
+      <button
+        aria-label="Aumentar cantidad"
+        disabled={safeValue >= max}
+        onClick={() => onChange(safeValue + 1)}
+        type="button"
+      >
+        <Icon name="plus" size={16} />
       </button>
     </div>
   );

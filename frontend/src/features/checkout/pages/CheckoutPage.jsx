@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '../../../components/common/Button';
 import { Input } from '../../../components/common/Input';
 import { Textarea } from '../../../components/common/Textarea';
@@ -7,10 +7,13 @@ import { useToast } from '../../../components/feedback/ToastProvider';
 import { PageContainer } from '../../../components/layout/PageContainer';
 import { SectionContainer } from '../../../components/layout/SectionContainer';
 import { Card } from '../../../components/ui/Card';
+import { EmptyState } from '../../../components/ui/EmptyState';
+import { usePageTitle } from '../../../hooks/usePageTitle';
 import { createCheckoutSession } from '../../../lib/apiClient';
 import { writeStorage } from '../../../lib/storage';
+import { OrderSummary } from '../../cart/components/OrderSummary';
 import { useCart } from '../../cart/CartProvider';
-import { formatCurrency } from '../../../utils/currency';
+import { validateCheckoutForm } from '../validation';
 
 const initialForm = {
   fullName: '',
@@ -25,29 +28,50 @@ const initialForm = {
 
 export function CheckoutPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const wasCanceled = searchParams.get('canceled') === '1';
   const { showToast } = useToast();
   const { items, cartTotal, clearCart } = useCart();
   const [formValues, setFormValues] = useState(initialForm);
+  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    document.title = 'ButaKeando | Checkout';
-  }, []);
+  usePageTitle('Finalizar compra');
+
+  if (!items.length) {
+    return (
+      <EmptyState
+        action={{ to: '/catalogo', label: 'Ir al catálogo' }}
+        body="Aún no has añadido productos al carrito. Empieza por el catálogo."
+        title="No hay productos para tramitar"
+      />
+    );
+  }
 
   const handleFieldChange = (event) => {
     const { name, value } = event.target;
     setFormValues((current) => ({ ...current, [name]: value }));
+
+    if (errors[name]) {
+      setErrors((current) => ({ ...current, [name]: undefined }));
+    }
+  };
+
+  const handleFieldBlur = (event) => {
+    const { name } = event.target;
+    const fieldError = validateCheckoutForm(formValues)[name];
+    setErrors((current) => ({ ...current, [name]: fieldError }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!items.length) {
-      showToast({
-        tone: 'warning',
-        title: 'Carrito vacio',
-        message: 'Anade al menos un producto antes de continuar al checkout.',
-      });
+    const nextErrors = validateCheckoutForm(formValues);
+    setErrors(nextErrors);
+
+    const firstInvalidField = Object.keys(initialForm).find((name) => nextErrors[name]);
+    if (firstInvalidField) {
+      event.currentTarget.elements.namedItem(firstInvalidField)?.focus();
       return;
     }
 
@@ -61,18 +85,18 @@ export function CheckoutPage() {
         unit_price: item.price,
       })),
       customer: {
-        full_name: formValues.fullName,
-        email: formValues.email,
-        phone: formValues.phone,
+        full_name: formValues.fullName.trim(),
+        email: formValues.email.trim(),
+        phone: formValues.phone.trim(),
       },
       shipping_address: {
-        address_line: formValues.address,
-        city: formValues.city,
-        postal_code: formValues.postalCode,
-        province: formValues.province,
+        address_line: formValues.address.trim(),
+        city: formValues.city.trim(),
+        postal_code: formValues.postalCode.trim(),
+        province: formValues.province.trim(),
         country: 'ES',
       },
-      comments: formValues.comments,
+      comments: formValues.comments.trim(),
       total: cartTotal,
       currency: 'eur',
     };
@@ -84,14 +108,14 @@ export function CheckoutPage() {
         items,
         customer: payload.customer,
         shipping: {
-          address: formValues.address,
-          city: formValues.city,
-          postalCode: formValues.postalCode,
-          province: formValues.province,
-          comments: formValues.comments,
+          address: payload.shipping_address.address_line,
+          city: payload.shipping_address.city,
+          postalCode: payload.shipping_address.postal_code,
+          province: payload.shipping_address.province,
+          comments: payload.comments,
         },
         total: cartTotal,
-        session,
+        reference: session.reference,
       });
 
       if (session.checkout_url) {
@@ -100,101 +124,103 @@ export function CheckoutPage() {
       }
 
       clearCart();
-
-      showToast({
-        tone: 'success',
-        title: 'Pedido preparado',
-        message: 'Sesion mock preparada. Configura API para usar pago real.',
-      });
-
-      navigate(`/pedido/confirmado?reference=${session.reference}`);
+      navigate(`/pedido/confirmado?reference=${encodeURIComponent(session.reference)}`);
     } catch (error) {
       showToast({
         tone: 'error',
-        title: 'No se pudo preparar el pedido',
-        message: error.message,
+        title: 'No se pudo iniciar el pago',
+        message: error.message || 'Inténtalo de nuevo en unos minutos.',
       });
-    } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (!items.length) {
-    return (
-      <div className="store-page">
-        <SectionContainer>
-          <PageContainer>
-            <Card className="shop-empty">
-              <h1>No hay productos para tramitar</h1>
-              <p>Aun no has anadido productos al carrito. Empieza por el catalogo.</p>
-              <Button to="/catalogo">Ir al catalogo</Button>
-            </Card>
-          </PageContainer>
-        </SectionContainer>
-      </div>
-    );
-  }
+  const fieldProps = (name) => ({
+    error: errors[name],
+    name,
+    onBlur: handleFieldBlur,
+    onChange: handleFieldChange,
+    value: formValues[name],
+  });
 
   return (
     <div className="store-page">
       <SectionContainer>
         <PageContainer className="store-shell">
           <div className="store-heading">
-            <span className="store-heading__eyebrow">Checkout</span>
-            <h1>Una primera experiencia visual de compra, clara y premium.</h1>
-            <p>Este formulario ya puede abrir Stripe Checkout real cuando conectes tu backend desplegado.</p>
+            <span className="store-heading__eyebrow">Finalizar compra</span>
+            <h1>Datos de envío.</h1>
+            <p>Completa tus datos y te llevaremos a la pasarela segura de Stripe para realizar el pago.</p>
           </div>
 
-          <div className="checkout-layout checkout-layout--store">
-            <Card className="checkout-card checkout-card--store">
-              <form className="checkout-form" onSubmit={handleSubmit}>
-                <Input label="Nombre y apellidos" name="fullName" onChange={handleFieldChange} required value={formValues.fullName} />
-                <div className="form-row">
-                  <Input label="Email" name="email" onChange={handleFieldChange} required type="email" value={formValues.email} />
-                  <Input label="Telefono" name="phone" onChange={handleFieldChange} required value={formValues.phone} />
-                </div>
-                <Input label="Direccion" name="address" onChange={handleFieldChange} required value={formValues.address} />
-                <div className="form-row">
-                  <Input label="Ciudad" name="city" onChange={handleFieldChange} required value={formValues.city} />
-                  <Input label="Codigo postal" name="postalCode" onChange={handleFieldChange} required value={formValues.postalCode} />
-                </div>
-                <Input label="Provincia" name="province" onChange={handleFieldChange} required value={formValues.province} />
-                <Textarea
-                  helper="Indica acabados, horario de entrega o cualquier detalle del pedido."
-                  label="Comentarios del pedido"
-                  name="comments"
-                  onChange={handleFieldChange}
-                  rows="5"
-                  value={formValues.comments}
-                />
+          {wasCanceled ? (
+            <p className="checkout-notice" role="status">
+              El pago no se ha completado y no se ha realizado ningún cargo. Puedes revisar tus datos e intentarlo de nuevo.
+            </p>
+          ) : null}
 
-                <Button block disabled={isSubmitting} type="submit">
-                  {isSubmitting ? 'Preparando pago...' : 'Continuar a Stripe Checkout'}
+          <div className="checkout-layout">
+            <Card className="checkout-card">
+              <form className="checkout-form" noValidate onSubmit={handleSubmit}>
+                <fieldset className="checkout-form__group">
+                  <legend>Contacto</legend>
+                  <Input autoComplete="name" label="Nombre y apellidos" maxLength={255} required {...fieldProps('fullName')} />
+                  <div className="form-row">
+                    <Input
+                      autoComplete="email"
+                      inputMode="email"
+                      label="Email"
+                      maxLength={255}
+                      required
+                      type="email"
+                      {...fieldProps('email')}
+                    />
+                    <Input
+                      autoComplete="tel"
+                      helper="Solo para coordinar la entrega."
+                      inputMode="tel"
+                      label="Teléfono"
+                      maxLength={50}
+                      required
+                      type="tel"
+                      {...fieldProps('phone')}
+                    />
+                  </div>
+                </fieldset>
+
+                <fieldset className="checkout-form__group">
+                  <legend>Dirección de entrega</legend>
+                  <Input autoComplete="street-address" label="Dirección" maxLength={255} required {...fieldProps('address')} />
+                  <div className="form-row">
+                    <Input autoComplete="address-level2" label="Ciudad" maxLength={120} required {...fieldProps('city')} />
+                    <Input
+                      autoComplete="postal-code"
+                      inputMode="numeric"
+                      label="Código postal"
+                      maxLength={5}
+                      required
+                      {...fieldProps('postalCode')}
+                    />
+                  </div>
+                  <Input autoComplete="address-level1" label="Provincia" maxLength={120} required {...fieldProps('province')} />
+                  <Textarea
+                    helper="Horario de entrega, acceso al edificio o cualquier detalle útil."
+                    label="Comentarios del pedido (opcional)"
+                    maxLength={500}
+                    rows="4"
+                    {...fieldProps('comments')}
+                  />
+                </fieldset>
+
+                <Button aria-busy={isSubmitting} block disabled={isSubmitting} size="lg" type="submit">
+                  {isSubmitting ? 'Conectando con la pasarela…' : 'Continuar al pago seguro'}
                 </Button>
               </form>
             </Card>
 
             <div className="checkout-sidebar">
-              <Card className="shop-summary-card">
-                <span className="shop-summary-card__eyebrow">Resumen del pedido</span>
-                <h2>Productos seleccionados</h2>
-                <div className="summary-list--store">
-                  {items.map((item) => (
-                    <div key={item.id} className="summary-list__row">
-                      <span>
-                        {item.name} x{item.quantity}
-                      </span>
-                      <strong>{formatCurrency(item.price * item.quantity)}</strong>
-                    </div>
-                  ))}
-                </div>
-                <div className="shop-summary-card__total">
-                  <span>Total</span>
-                  <strong>{formatCurrency(cartTotal)}</strong>
-                </div>
-              </Card>
-
-              <Button to="/carrito" tone="secondary">
+              <OrderSummary items={items} total={cartTotal} />
+              <Button to="/carrito" tone="ghost">
                 Volver al carrito
               </Button>
             </div>

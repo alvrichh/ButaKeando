@@ -64,7 +64,11 @@ def create_checkout_session(payload: CheckoutSessionRequest, settings: Settings)
       detail=f'Unsupported currency. Expected {settings.stripe_currency.lower()}.',
     )
 
-  resolved_items = resolve_cart_items(payload.items)
+  try:
+    resolved_items = resolve_cart_items(payload.items)
+  except ValueError as exc:
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
   amount_total_cents = calculate_total_cents(resolved_items)
   submitted_total_cents = amount_to_cents(payload.total)
 

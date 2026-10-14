@@ -8,15 +8,27 @@
   --color-stone-100: #eee6dd;
   --color-paper: #f7f1ea;
   --color-white: #fffdf9;
+  --color-gold-600: #7a5d26;
   --color-gold-500: #b89146;
   --color-gold-400: #d0ab63;
   --color-gold-300: #e4c98f;
   --color-olive-400: #8d8768;
-  --color-success: #4d7a57;
-  --color-error: #9a4d44;
-  --color-warning: #9a7644;
-  --color-info: #5e748d;
+  --color-success: #6f9c78;
+  --color-error: #c46a5e;
+  --color-warning: #c89a55;
+  --color-info: #7f97b3;
   --color-border: rgba(183, 152, 98, 0.2);
   --color-surface: rgba(255, 253, 249, 0.88);
   --color-surface-strong: rgba(20, 16, 13, 0.84);
+
+  // Semantic tokens for the dark storefront surfaces.
+  --color-surface-dark: rgba(18, 14, 12, 0.92);
+  --color-surface-raised: rgba(255, 255, 255, 0.03);
+  --color-border-gold: rgba(184, 145, 70, 0.16);
+  --color-border-gold-strong: rgba(184, 145, 70, 0.36);
+  --color-gold-tint: rgba(184, 145, 70, 0.14);
+  --color-text-strong: var(--color-white);
+  --color-text: rgba(247, 241, 234, 0.8);
+  --color-text-muted: rgba(247, 241, 234, 0.66);
+  --color-focus-ring: var(--color-gold-300);
 }

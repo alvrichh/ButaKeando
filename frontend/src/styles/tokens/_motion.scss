@@ -1,4 +1,6 @@
 :root {
-  --ease-standard: 220ms ease;
-  --ease-slow: 360ms ease;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-fast: 160ms var(--ease-out-soft);
+  --ease-standard: 220ms var(--ease-out-soft);
+  --ease-slow: 420ms var(--ease-out-soft);
 }

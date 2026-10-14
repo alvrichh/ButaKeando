@@ -1,7 +1,10 @@
 export const primaryNavigationItems = [
   { to: '/', label: 'Inicio' },
-  { to: '/catalogo', label: 'Catalogo' },
-  { to: '/carrito', label: 'Carrito' },
-  { to: '/checkout', label: 'Checkout' },
+  { to: '/catalogo', label: 'Catálogo' },
   { to: '/contacto', label: 'Contacto' },
+];
+
+export const footerNavigationItems = [
+  ...primaryNavigationItems,
+  { to: '/carrito', label: 'Carrito' },
 ];

@@ -238,6 +238,18 @@ Production choice is single web app:
 
 This avoids separate Render services and simplifies Stripe success/cancel URLs.
 
+## Product catalog sync
+
+The catalog lives in two places and must stay aligned:
+
+- `frontend/src/constants/products.js` drives the storefront UI
+- `backend/app/services/product_service.py` validates every checkout line (id, name, price)
+
+When adding or editing a product, update both files with the same `id`, `name` and `price`.
+Products flagged `purchasable: false` in the frontend (upcoming launches) must not be added to the backend list.
+
+Typography loads Cormorant Garamond and Montserrat from Google Fonts in `frontend/index.html`.
+
 ## Stripe production notes
 
 Stripe integration keeps recommended hosted Checkout flow:

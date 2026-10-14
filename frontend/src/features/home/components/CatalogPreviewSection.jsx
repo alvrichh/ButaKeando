@@ -1,22 +1,24 @@
 import { Badge } from '../../../components/common/Badge';
 import { Button } from '../../../components/common/Button';
+import { ProductCard } from '../../../components/ui/ProductCard';
 import { products } from '../../../constants/products';
-import { LandingProductCard } from './LandingProductCard';
 
 export function CatalogPreviewSection() {
   return (
-    <section className="landing-section landing-section--catalog" id="catalogo">
+    <section aria-labelledby="catalog-preview-title" className="landing-section landing-section--catalog" id="catalogo">
       <div className="landing-section__heading landing-section__heading--row">
         <div>
-          <Badge tone="gold">Seleccion destacada</Badge>
-          <h2>Una preview de catalogo pensada para ensenar marca, producto y estilo.</h2>
+          <Badge tone="gold">Selección destacada</Badge>
+          <h2 id="catalog-preview-title">Piezas para vivir y para mirar.</h2>
         </div>
-        <Button to="/catalogo">Ver tienda</Button>
+        <Button to="/catalogo" tone="secondary">
+          Ver todo el catálogo
+        </Button>
       </div>
 
       <div className="landing-product-grid">
-        {products.map((item) => (
-          <LandingProductCard key={item.id} item={item} />
+        {products.map((product) => (
+          <ProductCard key={product.id} compact product={product} />
         ))}
       </div>
     </section>

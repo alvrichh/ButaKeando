@@ -6,8 +6,11 @@ export function SiteShell() {
   return (
     <>
       <ScrollRestoration />
+      <a className="skip-link" href="#contenido">
+        Saltar al contenido
+      </a>
       <Header />
-      <main>
+      <main id="contenido" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />

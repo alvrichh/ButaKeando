@@ -12,9 +12,50 @@ body.modal-open {
 }
 
 #root {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
+main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+// Page wrappers stretch so their background reaches the footer.
+main > * {
+  flex: 1;
+}
+
+main:focus {
+  outline: none;
+}
+
 ::selection {
-  background: rgba(184, 145, 70, 0.22);
+  background: rgba(184, 145, 70, 0.32);
+  color: var(--color-white);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  background: var(--color-gold-400);
+  border-radius: var(--radius-pill);
+  color: var(--color-ink-950);
+  font-weight: 600;
+  left: var(--space-md);
+  padding: 0.7rem 1.1rem;
+  position: fixed;
+  top: var(--space-sm);
+  transform: translateY(-160%);
+  transition: transform var(--ease-fast);
+  z-index: var(--z-skip-link);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
 }

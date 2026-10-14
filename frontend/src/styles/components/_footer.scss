@@ -3,38 +3,56 @@
     radial-gradient(circle at top, rgba(184, 145, 70, 0.1), transparent 30%),
     linear-gradient(180deg, #0f0b09, #080605);
   color: var(--color-paper);
-  padding-block: var(--space-2xl);
+  padding-block: var(--space-2xl) var(--space-lg);
 }
 
 .site-footer__inner {
-  align-items: start;
-  border-top: 1px solid rgba(184, 145, 70, 0.16);
-  display: flex;
-  gap: var(--space-lg);
-  justify-content: space-between;
+  border-top: 1px solid var(--color-border-gold);
+  display: grid;
+  gap: var(--space-xl);
+  grid-template-columns: 1.4fr 1fr 1fr;
   padding-top: var(--space-xl);
 }
 
 .site-footer__brand,
+.site-footer__nav,
 .site-footer__contact {
+  align-content: start;
   display: grid;
   gap: var(--space-xs);
+}
+
+.site-footer__brand strong {
+  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+}
+
+.site-footer__brand p {
+  color: var(--color-text-muted);
   max-width: 22rem;
 }
 
-.site-footer__brand p,
-.site-footer__contact span,
+.site-footer__heading {
+  color: var(--color-gold-300);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  margin-bottom: var(--space-2xs);
+  text-transform: uppercase;
+}
+
+.site-footer__nav a,
+.site-footer__contact a,
+.site-footer__contact span:not(.site-footer__heading) {
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  padding-block: 0.2rem;
+  width: fit-content;
+}
+
+.site-footer__nav a,
 .site-footer__contact a {
-  color: rgba(247, 241, 234, 0.72);
-}
-
-.site-footer__nav {
-  display: grid;
-  gap: var(--space-sm);
-}
-
-.site-footer__nav a {
-  color: rgba(247, 241, 234, 0.84);
   transition: color var(--ease-standard);
 }
 
@@ -43,9 +61,16 @@
   color: var(--color-gold-300);
 }
 
+.site-footer__legal {
+  border-top: 1px solid rgba(184, 145, 70, 0.08);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-md);
+}
+
 @media (max-width: 720px) {
   .site-footer__inner {
-    align-items: flex-start;
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 }

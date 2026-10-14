@@ -5,9 +5,24 @@ h4 {
   color: var(--color-ink-950);
   font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
+  line-height: var(--line-heading);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--font-size-2xl);
+}
+
+h2 {
+  font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+}
+
+h3 {
+  font-size: 1.5rem;
 }
 
 p {
   color: var(--color-ink-700);
+  text-wrap: pretty;
 }

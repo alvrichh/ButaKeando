@@ -1,27 +1,42 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '../../../components/common/Button';
+import { Icon } from '../../../components/common/Icon';
 import { PageContainer } from '../../../components/layout/PageContainer';
 import { SectionContainer } from '../../../components/layout/SectionContainer';
 import { Card } from '../../../components/ui/Card';
+import { EmptyState } from '../../../components/ui/EmptyState';
+import { usePageTitle } from '../../../hooks/usePageTitle';
 import { readStorage } from '../../../lib/storage';
-import { formatCurrency } from '../../../utils/currency';
+import { OrderSummary } from '../../cart/components/OrderSummary';
 import { useCart } from '../../cart/CartProvider';
 
 export function OrderSuccessPage() {
   const [searchParams] = useSearchParams();
-  const reference = searchParams.get('reference') ?? 'BTK-REF-PENDIENTE';
-  const sessionId = searchParams.get('session_id');
-  const lastOrder = readStorage('butakeando:last-order');
+  const reference = searchParams.get('reference');
+  const [lastOrder] = useState(() => readStorage('butakeando:last-order'));
   const { clearCart } = useCart();
 
-  useEffect(() => {
-    document.title = 'ButaKeando | Pedido confirmado';
+  usePageTitle('Pedido confirmado');
 
-    if (reference || sessionId) {
+  useEffect(() => {
+    if (reference) {
       clearCart();
     }
-  }, [clearCart, reference, sessionId]);
+  }, [clearCart, reference]);
+
+  if (!reference) {
+    return (
+      <EmptyState
+        action={{ to: '/catalogo', label: 'Ir al catálogo' }}
+        body="No encontramos ningún pedido reciente asociado a esta página."
+        title="Sin pedido que mostrar"
+      />
+    );
+  }
+
+  // Only show the stored summary when it belongs to this same order.
+  const matchingOrder = lastOrder?.reference === reference ? lastOrder : null;
 
   return (
     <div className="store-page">
@@ -29,38 +44,26 @@ export function OrderSuccessPage() {
         <PageContainer className="store-shell">
           <div className="success-layout">
             <Card className="success-card success-card--primary">
-              <span className="shop-summary-card__eyebrow">Pago recibido</span>
-              <h1>Referencia {reference}</h1>
+              <span className="success-card__icon">
+                <Icon name="check" size={28} />
+              </span>
+              <span className="shop-summary-card__eyebrow">Pedido recibido</span>
+              <h1>¡Gracias por tu compra{matchingOrder?.customer?.full_name ? `, ${matchingOrder.customer.full_name.split(' ')[0]}` : ''}!</h1>
               <p>
-                Stripe ha devuelto al cliente correctamente. El backend termina confirmacion final, guardado y email
-                mediante webhook seguro.
+                Hemos recibido tu pedido con la referencia <strong className="success-card__reference">{reference}</strong>.
+                Nos pondremos en contacto contigo para coordinar la entrega.
               </p>
               <div className="success-card__actions">
                 <Button to="/catalogo">Seguir viendo productos</Button>
-                <Button to="/contacto" tone="secondary">
-                  Hablar con nosotros
+                <Button to="/contacto" tone="ghost">
+                  Contactar
                 </Button>
               </div>
             </Card>
 
-            <Card className="success-card">
-              <span className="shop-summary-card__eyebrow">Resumen guardado</span>
-              <h2>{lastOrder?.customer?.full_name || lastOrder?.customer?.name || 'Cliente ButaKeando'}</h2>
-              <div className="summary-list--store">
-                {(lastOrder?.items || []).map((item) => (
-                  <div key={item.id} className="summary-list__row">
-                    <span>
-                      {item.name} x{item.quantity}
-                    </span>
-                    <strong>{formatCurrency(item.price * item.quantity)}</strong>
-                  </div>
-                ))}
-              </div>
-              <div className="shop-summary-card__total">
-                <span>Total</span>
-                <strong>{formatCurrency(lastOrder?.total || 0)}</strong>
-              </div>
-            </Card>
+            {matchingOrder?.items?.length ? (
+              <OrderSummary eyebrow="Tu pedido" items={matchingOrder.items} total={matchingOrder.total} />
+            ) : null}
           </div>
         </PageContainer>
       </SectionContainer>
