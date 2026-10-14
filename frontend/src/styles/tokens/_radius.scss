@@ -1,6 +1,7 @@
+// Catalogue print has square edges; radius stays almost imperceptible.
 :root {
-  --radius-sm: 0.75rem;
-  --radius-md: 1.1rem;
-  --radius-lg: 1.5rem;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
   --radius-pill: 999px;
 }

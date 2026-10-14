@@ -1,11 +1,12 @@
-import butacaNordica from '../assets/images/products/butaca-nordica.jpg';
-import butacaSevilla from '../assets/images/products/butaca-sevilla.jpg';
-import butacaSevillaRodero from '../assets/images/products/butaca-sevilla-rodero.jpg';
+import butacaNordica from '../assets/images/products/butaca-nordica.webp';
+import butacaSevilla from '../assets/images/products/butaca-sevilla.webp';
+import butacaSevillaRodero from '../assets/images/products/butaca-sevilla-rodero.webp';
 
 // id, name and price must stay in sync with backend/app/services/product_service.py,
 // which validates every checkout line against its own catalog.
 export const products = [
   {
+    number: '01',
     id: 'butaca-nordica-oslo',
     slug: 'butaca-nordica-oslo',
     name: 'Butaca Nórdica Oslo',
@@ -25,6 +26,7 @@ export const products = [
     features: ['Respaldo envolvente', 'Asiento firme y confortable', 'Ideal para salón, dormitorio o estudio'],
   },
   {
+    number: '02',
     id: 'sillon-relax-premium',
     slug: 'sillon-relax-premium',
     name: 'Sillón Relax Premium',
@@ -44,6 +46,7 @@ export const products = [
     features: ['Asiento amplio', 'Apoyabrazos redondeados', 'Presencia elegante para estancias principales'],
   },
   {
+    number: '03',
     id: 'butaca-vintage-retro',
     slug: 'butaca-vintage-retro',
     name: 'Butaca Vintage Retro',
@@ -63,6 +66,7 @@ export const products = [
     features: ['Respaldo alto', 'Volumen tradicional', 'Acabado con identidad visual marcada'],
   },
   {
+    number: '04',
     id: 'sillon-moderno-milano',
     slug: 'sillon-moderno-milano',
     name: 'Sillón Moderno Milano',

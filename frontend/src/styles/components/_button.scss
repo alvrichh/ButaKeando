@@ -1,24 +1,26 @@
+// Buttons read like printed labels: square, uppercase mono, ink on paper.
 .button {
   align-items: center;
   border: 1px solid transparent;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
   gap: var(--space-xs);
   justify-content: center;
-  letter-spacing: 0.02em;
+  letter-spacing: var(--tracking-mono);
   min-height: 2.75rem;
-  padding: 0.75rem 1.35rem;
+  padding: 0.75rem 1.4rem;
   text-align: center;
+  text-transform: uppercase;
   touch-action: manipulation;
   transition:
-    transform var(--ease-fast),
-    border-color var(--ease-standard),
     background-color var(--ease-standard),
+    border-color var(--ease-standard),
     color var(--ease-standard),
-    box-shadow var(--ease-standard),
-    filter var(--ease-standard);
+    transform var(--ease-fast);
 }
 
 .button:active:not(:disabled) {
@@ -27,7 +29,7 @@
 
 .button:disabled {
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 .button[aria-busy='true'] {
@@ -35,55 +37,99 @@
 }
 
 .button--primary {
-  background: linear-gradient(135deg, var(--color-gold-300), var(--color-gold-500));
-  box-shadow: var(--shadow-soft);
-  color: var(--color-ink-950);
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.button--gold {
+  background: var(--color-gold-bright);
+  color: var(--color-ink);
 }
 
 .button--secondary {
-  background: var(--color-surface-dark);
-  border-color: var(--color-border-gold);
-  color: var(--color-paper);
+  background: transparent;
+  border-color: currentColor;
+  color: inherit;
 }
 
 .button--ghost {
   background: transparent;
-  border-color: var(--color-border-gold-strong);
-  color: var(--color-paper);
+  color: inherit;
+  padding-inline: 0.2rem;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
 }
 
 @media (hover: hover) {
   .button--primary:hover:not(:disabled) {
-    box-shadow: var(--shadow-gold-glow);
-    filter: brightness(1.05);
+    background: var(--color-gold);
+    color: var(--color-ink);
   }
 
-  .button--secondary:hover:not(:disabled),
+  .button--gold:hover:not(:disabled) {
+    background: var(--color-paper);
+  }
+
+  .button--secondary:hover:not(:disabled) {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-paper);
+  }
+
   .button--ghost:hover:not(:disabled) {
-    background: var(--color-gold-tint);
-    border-color: var(--color-gold-400);
-    color: var(--color-white);
+    color: var(--color-gold-ink);
   }
 }
 
 .button--sm {
-  font-size: var(--font-size-xs);
   min-height: 2.75rem;
   padding: 0.5rem 1rem;
 }
 
-.button--md {
-  font-size: var(--font-size-sm);
-}
-
 .button--lg {
-  font-size: var(--font-size-md);
-  min-height: 3.25rem;
-  padding: 0.9rem 1.7rem;
+  font-size: var(--font-size-sm);
+  min-height: 3.4rem;
+  padding: 0.9rem 1.9rem;
 }
 
 .button--block {
   width: 100%;
+}
+
+// Inline text link with an animated rule, used for secondary actions.
+.text-link {
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  letter-spacing: var(--tracking-mono);
+  padding: 0.6rem 0;
+  position: relative;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.text-link::after {
+  background: currentColor;
+  bottom: 0.4rem;
+  content: '';
+  height: 1px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  transform-origin: left;
+  transition: transform var(--ease-standard);
+}
+
+.text-link:hover::after {
+  transform: scaleX(0.35);
+}
+
+.text-link--muted {
+  color: var(--color-ink-muted);
 }
 
 .icon {

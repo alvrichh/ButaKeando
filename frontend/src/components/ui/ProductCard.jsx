@@ -1,38 +1,31 @@
 import { Link } from 'react-router-dom';
-import { Badge } from '../common/Badge';
-import { Icon } from '../common/Icon';
-import { Card } from './Card';
 import { ProductMedia } from './ProductMedia';
 import { formatCurrency } from '../../utils/currency';
 
-export function ProductCard({ product, compact = false }) {
-  const productUrl = `/producto/${product.slug}`;
-
+// A catalogue plate: number, photo, name and spec line, separated by rules instead of a boxed card.
+export function ProductCard({ product }) {
   return (
-    <Card className={['product-card', compact && 'product-card--compact'].filter(Boolean).join(' ')}>
-      <ProductMedia className="product-card__media" product={product} showName />
+    <article className="plate">
+      <div className="plate__meta mono">
+        <span>Nº {product.number}</span>
+        <span>{product.category}</span>
+      </div>
 
-      <div className="product-card__content">
-        <div className="product-card__heading">
-          <Badge tone="gold">{product.category}</Badge>
-          <span className="product-card__availability">{product.availability}</span>
-        </div>
-        <h3>
-          {/* The stretched link makes the whole card clickable while keeping one tab stop. */}
-          <Link className="product-card__link" to={productUrl}>
+      <ProductMedia className="plate__media" product={product} />
+
+      <div className="plate__body">
+        <h3 className="plate__name">
+          {/* The stretched link makes the whole plate clickable while keeping one tab stop. */}
+          <Link className="plate__link" to={`/producto/${product.slug}`}>
             {product.name}
           </Link>
         </h3>
-        {!compact ? <p>{product.shortDescription}</p> : null}
+        <div className="plate__specs mono">
+          <span>{product.dimensions}</span>
+          <span className={product.purchasable ? undefined : 'plate__status--soon'}>{product.availability}</span>
+        </div>
+        <div className="plate__price">{formatCurrency(product.price)}</div>
       </div>
-
-      <div className="product-card__footer">
-        <strong className="product-card__price">{formatCurrency(product.price)}</strong>
-        <span aria-hidden="true" className="product-card__cta">
-          Ver detalle
-          <Icon name="arrowRight" size={16} />
-        </span>
-      </div>
-    </Card>
+    </article>
   );
 }

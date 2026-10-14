@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '../../../components/common/Button';
 import { Input } from '../../../components/common/Input';
 import { Textarea } from '../../../components/common/Textarea';
 import { useToast } from '../../../components/feedback/ToastProvider';
 import { PageContainer } from '../../../components/layout/PageContainer';
+import { PageHeading } from '../../../components/layout/PageHeading';
 import { SectionContainer } from '../../../components/layout/SectionContainer';
-import { Card } from '../../../components/ui/Card';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { usePageTitle } from '../../../hooks/usePageTitle';
 import { createCheckoutSession } from '../../../lib/apiClient';
@@ -147,11 +147,15 @@ export function CheckoutPage() {
     <div className="store-page">
       <SectionContainer>
         <PageContainer className="store-shell">
-          <div className="store-heading">
-            <span className="store-heading__eyebrow">Finalizar compra</span>
-            <h1>Datos de envío.</h1>
-            <p>Completa tus datos y te llevaremos a la pasarela segura de Stripe para realizar el pago.</p>
-          </div>
+          <PageHeading
+            label="Finalizar compra"
+            lead="Completa tus datos y te llevaremos a la pasarela segura de Stripe para pagar."
+            title={
+              <>
+                ¿A dónde la <em>llevamos</em>?
+              </>
+            }
+          />
 
           {wasCanceled ? (
             <p className="checkout-notice" role="status">
@@ -160,10 +164,12 @@ export function CheckoutPage() {
           ) : null}
 
           <div className="checkout-layout">
-            <Card className="checkout-card">
+            <div className="checkout-card">
               <form className="checkout-form" noValidate onSubmit={handleSubmit}>
                 <fieldset className="checkout-form__group">
-                  <legend>Contacto</legend>
+                  <legend>
+                    <span className="mono">01</span> Contacto
+                  </legend>
                   <Input autoComplete="name" label="Nombre y apellidos" maxLength={255} required {...fieldProps('fullName')} />
                   <div className="form-row">
                     <Input
@@ -189,7 +195,9 @@ export function CheckoutPage() {
                 </fieldset>
 
                 <fieldset className="checkout-form__group">
-                  <legend>Dirección de entrega</legend>
+                  <legend>
+                    <span className="mono">02</span> Dirección de entrega
+                  </legend>
                   <Input autoComplete="street-address" label="Dirección" maxLength={255} required {...fieldProps('address')} />
                   <div className="form-row">
                     <Input autoComplete="address-level2" label="Ciudad" maxLength={120} required {...fieldProps('city')} />
@@ -216,13 +224,14 @@ export function CheckoutPage() {
                   {isSubmitting ? 'Conectando con la pasarela…' : 'Continuar al pago seguro'}
                 </Button>
               </form>
-            </Card>
+            </div>
 
             <div className="checkout-sidebar">
-              <OrderSummary items={items} total={cartTotal} />
-              <Button to="/carrito" tone="ghost">
-                Volver al carrito
-              </Button>
+              <OrderSummary items={items} title="Tu pedido" total={cartTotal}>
+                <Link className="text-link order-summary__back" to="/carrito">
+                  Editar el carrito
+                </Link>
+              </OrderSummary>
             </div>
           </div>
         </PageContainer>

@@ -1,7 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { PageContainer } from './PageContainer';
-import { Icon } from '../common/Icon';
 import logoTransparent from '../../assets/images/logos/butakeando-logo-transparent.png';
 import { primaryNavigationItems } from '../../constants/navigation';
 import { useCart } from '../../features/cart/CartProvider';
@@ -39,20 +38,11 @@ export function Header() {
     };
   }, [isMenuOpen]);
 
-  const cartLabel = cartItemsCount > 0 ? `Carrito, ${cartItemsCount} productos` : 'Carrito vacío';
-
   return (
     <header className="site-header">
       <PageContainer className="site-header__inner">
         <NavLink aria-label="ButaKeando, ir al inicio" className="site-header__brand" to="/">
-          <img
-            alt=""
-            className="site-header__brand-logo"
-            decoding="async"
-            height="48"
-            src={logoTransparent}
-            width="168"
-          />
+          <img alt="" className="site-header__brand-logo" decoding="async" height="147" src={logoTransparent} width="541" />
         </NavLink>
 
         <nav
@@ -69,18 +59,13 @@ export function Header() {
 
         <div className="site-header__actions">
           <NavLink
-            aria-label={cartLabel}
+            aria-label={cartItemsCount > 0 ? `Carrito, ${cartItemsCount} productos` : 'Carrito vacío'}
             className={({ isActive }) =>
-              ['site-header__cart', isActive && 'site-header__cart--active'].filter(Boolean).join(' ')
+              ['site-header__cart', 'mono', isActive && 'site-header__cart--active'].filter(Boolean).join(' ')
             }
             to="/carrito"
           >
-            <Icon name="cart" size={22} />
-            {cartItemsCount > 0 ? (
-              <span aria-hidden="true" className="site-header__cart-badge">
-                {cartItemsCount}
-              </span>
-            ) : null}
+            Carrito <span className="site-header__cart-count">({String(cartItemsCount).padStart(2, '0')})</span>
           </NavLink>
 
           <button
@@ -91,7 +76,6 @@ export function Header() {
             onClick={() => setIsMenuOpen((current) => !current)}
             type="button"
           >
-            <span />
             <span />
             <span />
           </button>

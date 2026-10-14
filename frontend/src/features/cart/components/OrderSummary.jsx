@@ -1,38 +1,34 @@
-import { Icon } from '../../../components/common/Icon';
-import { Card } from '../../../components/ui/Card';
 import { formatCurrency } from '../../../utils/currency';
 
-export function OrderSummary({ items, total, eyebrow = 'Resumen del pedido', children }) {
+// Styled like a shop receipt: ruled rows in mono, total in display type.
+export function OrderSummary({ items, total, title = 'Resumen', children }) {
   return (
-    <Card as="aside" className="shop-summary-card">
-      <span className="shop-summary-card__eyebrow">{eyebrow}</span>
+    <aside aria-label={title} className="order-summary">
+      <span className="order-summary__title mono">{title}</span>
 
-      <ul className="summary-list">
+      <ul className="order-summary__list">
         {items.map((item) => (
-          <li key={item.id} className="summary-list__row">
+          <li key={item.id} className="order-summary__row">
             <span>
-              {item.name} <span className="summary-list__qty">x{item.quantity}</span>
+              {item.name} <span className="order-summary__qty mono">x{item.quantity}</span>
             </span>
-            <strong>{formatCurrency(item.price * item.quantity)}</strong>
+            <span className="mono">{formatCurrency(item.price * item.quantity)}</span>
           </li>
         ))}
-        <li className="summary-list__row summary-list__row--muted">
+        <li className="order-summary__row order-summary__row--muted">
           <span>Envío</span>
-          <span>Se coordina contigo</span>
+          <span className="mono">A coordinar</span>
         </li>
       </ul>
 
-      <div className="shop-summary-card__total">
-        <span>Total</span>
+      <div className="order-summary__total">
+        <span className="mono">Total</span>
         <strong>{formatCurrency(total)}</strong>
       </div>
 
-      {children ? <div className="shop-summary-card__actions">{children}</div> : null}
+      {children ? <div className="order-summary__actions">{children}</div> : null}
 
-      <p className="shop-summary-card__trust">
-        <Icon name="shield" size={16} />
-        Pago seguro procesado por Stripe
-      </p>
-    </Card>
+      <p className="order-summary__note mono">Pago seguro con Stripe</p>
+    </aside>
   );
 }

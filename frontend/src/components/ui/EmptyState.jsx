@@ -1,18 +1,18 @@
 import { Button } from '../common/Button';
 import { PageContainer } from '../layout/PageContainer';
 import { SectionContainer } from '../layout/SectionContainer';
-import { Card } from './Card';
 
-export function EmptyState({ title, body, action }) {
+export function EmptyState({ label, title, body, action }) {
   return (
     <div className="store-page">
       <SectionContainer>
         <PageContainer>
-          <Card className="shop-empty">
+          <div className="empty-state">
+            {label ? <span className="empty-state__label mono">{label}</span> : null}
             <h1>{title}</h1>
             <p>{body}</p>
             {action ? <Button to={action.to}>{action.label}</Button> : null}
-          </Card>
+          </div>
         </PageContainer>
       </SectionContainer>
     </div>

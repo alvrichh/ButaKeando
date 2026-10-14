@@ -1,56 +1,54 @@
 import { Link } from 'react-router-dom';
-import { Badge } from '../../../components/common/Badge';
 import { Button } from '../../../components/common/Button';
-import { Icon } from '../../../components/common/Icon';
 import { ProductMedia } from '../../../components/ui/ProductMedia';
 import { getProductBySlug } from '../../../constants/products';
 import { formatCurrency } from '../../../utils/currency';
-import { heroContent, trustHighlights } from '../homeData';
+import { heroContent } from '../homeData';
+import { Stamp } from './Stamp';
 
 export function LandingHero() {
   const featuredProduct = getProductBySlug(heroContent.featuredSlug);
 
   return (
-    <section aria-labelledby="hero-title" className="landing-hero">
-      <div className="landing-hero__copy">
-        <Badge tone="gold">{heroContent.eyebrow}</Badge>
-        <h1 id="hero-title">{heroContent.title}</h1>
-        <p>{heroContent.subtitle}</p>
+    <section aria-labelledby="hero-title" className="hero">
+      <div className="hero__entry">
+        <p className="hero__phonetic mono">
+          {heroContent.syllables} <span aria-hidden="true">·</span> <em>{heroContent.grammar}</em>
+        </p>
+        <h1 className="hero__word" id="hero-title">
+          {heroContent.word}
+          <span className="hero__dot">.</span>
+        </h1>
 
-        <div className="landing-hero__actions">
-          <Button size="lg" to={heroContent.primaryCta.to}>
-            {heroContent.primaryCta.label}
-            <Icon name="arrowRight" size={18} />
+        <ol className="hero__definitions">
+          {heroContent.definitions.map((definition) => (
+            <li key={definition}>{definition}</li>
+          ))}
+        </ol>
+        <p className="hero__example">{heroContent.example}</p>
+
+        <div className="hero__actions">
+          <Button size="lg" to="/catalogo">
+            Ver las butacas
           </Button>
-          <Button size="lg" to={heroContent.secondaryCta.to} tone="ghost">
-            {heroContent.secondaryCta.label}
+          <Button to="/contacto" tone="ghost">
+            Pedir consejo
           </Button>
         </div>
-
-        <ul className="landing-trust">
-          {trustHighlights.map((item) => (
-            <li key={item.title} className="landing-trust__item">
-              <span className="landing-trust__icon">
-                <Icon name={item.icon} size={20} />
-              </span>
-              <span>
-                <strong>{item.title}</strong>
-                <small>{item.body}</small>
-              </span>
-            </li>
-          ))}
-        </ul>
       </div>
 
       {featuredProduct ? (
-        <div className="landing-hero__visual">
-          <ProductMedia className="landing-hero__media" priority product={featuredProduct} />
-          <Link className="landing-hero__feature" to={`/producto/${featuredProduct.slug}`}>
-            <span className="landing-hero__feature-label">Pieza destacada</span>
-            <strong>{featuredProduct.name}</strong>
-            <span className="landing-hero__feature-price">{formatCurrency(featuredProduct.price)}</span>
+        <figure className="hero__figure">
+          <Link aria-label={`Ver ${featuredProduct.name}`} className="hero__figure-link" to={`/producto/${featuredProduct.slug}`}>
+            <ProductMedia className="hero__media" priority product={featuredProduct} />
           </Link>
-        </div>
+          <figcaption className="hero__caption mono">
+            <span>Nº {featuredProduct.number}</span>
+            <span className="hero__caption-name">{featuredProduct.name}</span>
+            <span>{formatCurrency(featuredProduct.price)}</span>
+          </figcaption>
+          <Stamp className="hero__stamp" />
+        </figure>
       ) : null}
     </section>
   );

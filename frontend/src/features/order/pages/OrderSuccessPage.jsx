@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Button } from '../../../components/common/Button';
-import { Icon } from '../../../components/common/Icon';
 import { PageContainer } from '../../../components/layout/PageContainer';
 import { SectionContainer } from '../../../components/layout/SectionContainer';
-import { Card } from '../../../components/ui/Card';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { usePageTitle } from '../../../hooks/usePageTitle';
 import { readStorage } from '../../../lib/storage';
 import { OrderSummary } from '../../cart/components/OrderSummary';
 import { useCart } from '../../cart/CartProvider';
+import { Stamp } from '../../home/components/Stamp';
 
 export function OrderSuccessPage() {
   const [searchParams] = useSearchParams();
@@ -30,39 +29,41 @@ export function OrderSuccessPage() {
       <EmptyState
         action={{ to: '/catalogo', label: 'Ir al catálogo' }}
         body="No encontramos ningún pedido reciente asociado a esta página."
-        title="Sin pedido que mostrar"
+        label="Sin referencia"
+        title="Aquí no hay ningún pedido"
       />
     );
   }
 
   // Only show the stored summary when it belongs to this same order.
   const matchingOrder = lastOrder?.reference === reference ? lastOrder : null;
+  const firstName = matchingOrder?.customer?.full_name?.split(' ')[0];
 
   return (
     <div className="store-page">
       <SectionContainer>
         <PageContainer className="store-shell">
           <div className="success-layout">
-            <Card className="success-card success-card--primary">
-              <span className="success-card__icon">
-                <Icon name="check" size={28} />
-              </span>
-              <span className="shop-summary-card__eyebrow">Pedido recibido</span>
-              <h1>¡Gracias por tu compra{matchingOrder?.customer?.full_name ? `, ${matchingOrder.customer.full_name.split(' ')[0]}` : ''}!</h1>
+            <div className="success">
+              <Stamp className="success__stamp" />
+              <span className="success__label mono">Pedido recibido · {reference}</span>
+              <h1>
+                Gracias{firstName ? `, ${firstName}` : ''}. <em>Ya puedes ir haciendo hueco.</em>
+              </h1>
               <p>
-                Hemos recibido tu pedido con la referencia <strong className="success-card__reference">{reference}</strong>.
-                Nos pondremos en contacto contigo para coordinar la entrega.
+                Hemos recibido tu pedido. En breve te escribiremos para coordinar contigo la entrega. Guarda la referencia{' '}
+                <strong className="mono">{reference}</strong> por si necesitas consultarnos algo.
               </p>
-              <div className="success-card__actions">
-                <Button to="/catalogo">Seguir viendo productos</Button>
-                <Button to="/contacto" tone="ghost">
+              <div className="success__actions">
+                <Button to="/catalogo">Seguir mirando</Button>
+                <Button to="/contacto" tone="secondary">
                   Contactar
                 </Button>
               </div>
-            </Card>
+            </div>
 
             {matchingOrder?.items?.length ? (
-              <OrderSummary eyebrow="Tu pedido" items={matchingOrder.items} total={matchingOrder.total} />
+              <OrderSummary items={matchingOrder.items} title="Tu pedido" total={matchingOrder.total} />
             ) : null}
           </div>
         </PageContainer>

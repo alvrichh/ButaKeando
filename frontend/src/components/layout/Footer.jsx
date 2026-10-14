@@ -9,13 +9,14 @@ export function Footer() {
     <footer className="site-footer">
       <PageContainer>
         <div className="site-footer__inner">
-          <div className="site-footer__brand">
-            <strong>ButaKeando</strong>
-            <p>Butacas y sillones con una estética premium, cálida y pensada para hogares con personalidad.</p>
-          </div>
+          <p className="site-footer__claim">
+            Butacas y sillones con carácter,
+            <br />
+            elegidos uno a uno desde Sevilla.
+          </p>
 
-          <nav aria-label="Pie de página" className="site-footer__nav">
-            <span className="site-footer__heading">Tienda</span>
+          <nav aria-label="Pie de página" className="site-footer__col">
+            <span className="site-footer__heading mono">Tienda</span>
             {footerNavigationItems.map((item) => (
               <NavLink key={item.to} to={item.to}>
                 {item.label}
@@ -23,16 +24,21 @@ export function Footer() {
             ))}
           </nav>
 
-          <div className="site-footer__contact">
-            <span className="site-footer__heading">Contacto</span>
+          <div className="site-footer__col">
+            <span className="site-footer__heading mono">Escríbenos</span>
             <a href="mailto:hola@butakeando.es">hola@butakeando.es</a>
             <span>Sevilla, España</span>
             <span>Pago seguro con Stripe</span>
           </div>
         </div>
 
-        <div className="site-footer__legal">
-          <span>© {year} ButaKeando. Todos los derechos reservados.</span>
+        <p aria-hidden="true" className="site-footer__wordmark">
+          ButaKeando
+        </p>
+
+        <div className="site-footer__legal mono">
+          <span>© {year} ButaKeando</span>
+          <span>Todos los derechos reservados</span>
         </div>
       </PageContainer>
     </footer>

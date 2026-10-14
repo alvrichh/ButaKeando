@@ -1,8 +1,5 @@
 :root {
-  --shadow-soft: 0 18px 50px rgba(16, 11, 8, 0.09);
-  --shadow-card: 0 20px 55px rgba(18, 12, 9, 0.12);
-  --shadow-dark-card: 0 20px 55px rgba(0, 0, 0, 0.24);
-  --shadow-dark-card-hover: 0 28px 70px rgba(0, 0, 0, 0.36);
-  --shadow-gold-glow: 0 10px 30px rgba(184, 145, 70, 0.22);
-  --shadow-overlay: 0 24px 80px rgba(9, 7, 5, 0.38);
+  --shadow-paper: 0 1px 0 rgba(22, 18, 15, 0.06), 0 12px 30px -18px rgba(22, 18, 15, 0.35);
+  --shadow-lift: 0 22px 40px -24px rgba(22, 18, 15, 0.45);
+  --shadow-overlay: 0 30px 80px rgba(9, 7, 5, 0.4);
 }

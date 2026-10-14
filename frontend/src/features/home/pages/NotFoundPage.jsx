@@ -8,7 +8,8 @@ export function NotFoundPage() {
     <EmptyState
       action={{ to: '/', label: 'Volver al inicio' }}
       body="La página que buscas no existe o ha cambiado de dirección."
-      title="Página no encontrada"
+      label="Error 404"
+      title="Aquí no hay ninguna butaca"
     />
   );
 }

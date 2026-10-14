@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Badge } from '../../../components/common/Badge';
 import { Button } from '../../../components/common/Button';
-import { Icon } from '../../../components/common/Icon';
 import { QuantitySelector } from '../../../components/common/QuantitySelector';
 import { useToast } from '../../../components/feedback/ToastProvider';
 import { PageContainer } from '../../../components/layout/PageContainer';
 import { SectionContainer } from '../../../components/layout/SectionContainer';
-import { Card } from '../../../components/ui/Card';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { useModal } from '../../../components/ui/Modal';
 import { ProductMedia } from '../../../components/ui/ProductMedia';
@@ -31,7 +28,8 @@ export function ProductPage() {
       <EmptyState
         action={{ to: '/catalogo', label: 'Volver al catálogo' }}
         body="La pieza que buscas no está en el catálogo actual."
-        title="Producto no encontrado"
+        label="Error 404"
+        title="Esta butaca no está aquí"
       />
     );
   }
@@ -47,19 +45,24 @@ export function ProductPage() {
 
   const openAdviceModal = () =>
     openModal({
-      eyebrow: 'Consulta',
-      title: 'Atención personalizada',
-      description: 'Te ayudamos a elegir modelo, medida o acabado para tu espacio.',
+      eyebrow: `Nº ${product.number} · Consulta`,
+      title: product.purchasable ? '¿Te ayudamos a decidir?' : 'Te avisamos cuando llegue',
+      description: product.purchasable
+        ? 'Escríbenos y te orientamos sobre medidas, color y plazos de esta pieza.'
+        : 'Escríbenos y te contamos en cuanto esta pieza esté disponible.',
       content: (
         <ul className="modal-list">
-          <li>Escríbenos a hola@butakeando.es indicando el modelo que te interesa.</li>
-          <li>Te orientamos sobre estilo, disponibilidad y combinaciones.</li>
-          <li>Respondemos personalmente, sin respuestas automáticas.</li>
+          <li>Dinos el modelo y, si puedes, las medidas del hueco donde irá.</li>
+          <li>Te responde una persona, no un mensaje automático.</li>
         </ul>
       ),
       actions: [
-        { label: 'Cerrar', tone: 'ghost' },
-        { label: 'Escribir email', tone: 'primary', href: `mailto:hola@butakeando.es?subject=${encodeURIComponent(product.name)}` },
+        { label: 'Cerrar', tone: 'secondary' },
+        {
+          label: 'Escribir email',
+          tone: 'primary',
+          href: `mailto:hola@butakeando.es?subject=${encodeURIComponent(`Consulta: ${product.name}`)}`,
+        },
       ],
     });
 
@@ -67,7 +70,7 @@ export function ProductPage() {
     <div className="store-page">
       <SectionContainer>
         <PageContainer className="store-shell">
-          <nav aria-label="Ruta de navegación" className="breadcrumb">
+          <nav aria-label="Ruta de navegación" className="breadcrumb mono">
             <ol>
               <li>
                 <Link to="/">Inicio</Link>
@@ -75,82 +78,80 @@ export function ProductPage() {
               <li>
                 <Link to="/catalogo">Catálogo</Link>
               </li>
-              <li aria-current="page">{product.name}</li>
+              <li aria-current="page">Nº {product.number}</li>
             </ol>
           </nav>
 
           <div className="product-detail">
             <div className="product-detail__visual">
-              <ProductMedia className="product-detail__media" priority product={product} showName />
+              <ProductMedia className="product-detail__media" priority product={product} />
+              <span aria-hidden="true" className="product-detail__number">
+                {product.number}
+              </span>
             </div>
 
-            <Card className="product-detail__panel">
-              <div className="product-detail__header">
-                <Badge tone="gold">{product.category}</Badge>
-                <span className="product-detail__availability">{product.availability}</span>
-              </div>
-
+            <div className="product-detail__sheet">
+              <span className="product-detail__label mono">
+                {product.category} · {product.style}
+              </span>
               <h1>{product.name}</h1>
               <p className="product-detail__tagline">{product.shortDescription}</p>
-              <div className="product-detail__price">{formatCurrency(product.price)}</div>
+
+              <div className="product-detail__price-row">
+                <span className="product-detail__price">{formatCurrency(product.price)}</span>
+                <span className={['product-detail__availability', 'mono', !product.purchasable && 'is-soon'].filter(Boolean).join(' ')}>
+                  {product.availability}
+                </span>
+              </div>
 
               {product.purchasable ? (
                 <div className="product-detail__purchase">
-                  <div>
-                    <span className="product-detail__quantity-label">
-                      Cantidad
-                    </span>
-                    <QuantitySelector max={MAX_ITEM_QUANTITY} onChange={setQuantity} value={quantity} />
-                  </div>
-                  <div className="product-detail__actions">
-                    <Button onClick={handleAddToCart} size="lg">
-                      <Icon name="cart" size={18} />
-                      Añadir al carrito
-                    </Button>
-                    <Button onClick={openAdviceModal} size="lg" tone="ghost">
-                      Consultar
-                    </Button>
-                  </div>
+                  <QuantitySelector max={MAX_ITEM_QUANTITY} onChange={setQuantity} value={quantity} />
+                  <Button className="product-detail__add" onClick={handleAddToCart} size="lg">
+                    Añadir al carrito · {formatCurrency(product.price * quantity)}
+                  </Button>
                 </div>
               ) : (
-                <div className="product-detail__notice">
-                  <p>Esta pieza todavía no está a la venta. Escríbenos y te avisamos en cuanto esté disponible.</p>
-                  <Button onClick={openAdviceModal} size="lg">
-                    Avisarme del lanzamiento
+                <div className="product-detail__purchase">
+                  <Button className="product-detail__add" onClick={openAdviceModal} size="lg">
+                    Avisarme cuando llegue
                   </Button>
                 </div>
               )}
 
+              {product.purchasable ? (
+                <button className="text-link product-detail__advice" onClick={openAdviceModal} type="button">
+                  ¿Dudas? Te ayudamos a decidir
+                </button>
+              ) : null}
+
               <p className="product-detail__description">{product.description}</p>
 
-              <dl className="product-detail__specs">
-                <div className="product-detail__spec">
-                  <dt>Materiales</dt>
-                  <dd>{product.materials.join(' · ')}</dd>
-                </div>
-                <div className="product-detail__spec">
-                  <dt>Medidas</dt>
+              <dl className="spec-sheet">
+                <div className="spec-sheet__row">
+                  <dt className="mono">Medidas</dt>
                   <dd>{product.dimensions}</dd>
                 </div>
-                <div className="product-detail__spec">
-                  <dt>Estilo</dt>
+                <div className="spec-sheet__row">
+                  <dt className="mono">Materiales</dt>
+                  <dd>{product.materials.join(', ')}</dd>
+                </div>
+                <div className="spec-sheet__row">
+                  <dt className="mono">Estilo</dt>
                   <dd>{product.style}</dd>
                 </div>
-                <div className="product-detail__spec">
-                  <dt>Disponibilidad</dt>
-                  <dd>{product.availability}</dd>
+                <div className="spec-sheet__row">
+                  <dt className="mono">Lo mejor</dt>
+                  <dd>
+                    <ul className="spec-sheet__list">
+                      {product.features.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </dd>
                 </div>
               </dl>
-
-              <div className="product-detail__group">
-                <h2>Características principales</h2>
-                <ul>
-                  {product.features.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            </Card>
+            </div>
           </div>
         </PageContainer>
       </SectionContainer>

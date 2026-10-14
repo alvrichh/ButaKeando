@@ -1,24 +1,23 @@
-import { Badge } from '../../../components/common/Badge';
-import { Button } from '../../../components/common/Button';
+import { Link } from 'react-router-dom';
 import { ProductCard } from '../../../components/ui/ProductCard';
 import { products } from '../../../constants/products';
 
 export function CatalogPreviewSection() {
   return (
-    <section aria-labelledby="catalog-preview-title" className="landing-section landing-section--catalog" id="catalogo">
-      <div className="landing-section__heading landing-section__heading--row">
-        <div>
-          <Badge tone="gold">Selección destacada</Badge>
-          <h2 id="catalog-preview-title">Piezas para vivir y para mirar.</h2>
-        </div>
-        <Button to="/catalogo" tone="secondary">
-          Ver todo el catálogo
-        </Button>
-      </div>
+    <section aria-labelledby="catalog-preview-title" className="home-catalog">
+      <header className="section-head">
+        <span className="section-head__index mono">I.</span>
+        <h2 id="catalog-preview-title">
+          El catálogo <sup className="section-head__count mono">({String(products.length).padStart(2, '0')})</sup>
+        </h2>
+        <Link className="text-link" to="/catalogo">
+          Verlo entero
+        </Link>
+      </header>
 
-      <div className="landing-product-grid">
+      <div className="plate-grid">
         {products.map((product) => (
-          <ProductCard key={product.id} compact product={product} />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </section>

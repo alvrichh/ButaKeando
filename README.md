@@ -248,7 +248,9 @@ The catalog lives in two places and must stay aligned:
 When adding or editing a product, update both files with the same `id`, `name` and `price`.
 Products flagged `purchasable: false` in the frontend (upcoming launches) must not be added to the backend list.
 
-Typography loads Cormorant Garamond and Montserrat from Google Fonts in `frontend/index.html`.
+Typography loads Fraunces, Instrument Sans and DM Mono from Google Fonts in `frontend/index.html`.
+
+Product photos are served as cleaned WebP files (`frontend/src/assets/images/products/*.webp`) with the supplier watermarks removed; the original JPGs are kept as source.
 
 ## Stripe production notes
 
