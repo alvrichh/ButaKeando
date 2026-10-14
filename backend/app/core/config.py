@@ -46,7 +46,7 @@ class Settings(BaseSettings):
   stripe_webhook_secret: str = ''
   stripe_api_version: str = '2026-02-25.clover'
   stripe_currency: str = 'eur'
-  order_notification_email: str = 'owner@butakeando.test'
+  order_notification_email: str = 'alvrodmol@gmail.com'
   email_from: str = 'no-reply@butakeando.test'
   smtp_host: str = ''
   smtp_port: int = 587

@@ -2,6 +2,7 @@ import { Button } from '../../../components/common/Button';
 import { PageContainer } from '../../../components/layout/PageContainer';
 import { PageHeading } from '../../../components/layout/PageHeading';
 import { SectionContainer } from '../../../components/layout/SectionContainer';
+import { appConfig } from '../../../lib/config';
 import { usePageTitle } from '../../../hooks/usePageTitle';
 
 export function ContactPage() {
@@ -24,11 +25,11 @@ export function ContactPage() {
           <div className="contact-grid">
             <div className="contact-block">
               <span className="contact-block__label mono">Por correo</span>
-              <a className="contact-block__big" href="mailto:hola@butakeando.es">
-                hola@butakeando.es
+              <a className="contact-block__big" href={`mailto:${appConfig.supportEmail}`}>
+                {appConfig.supportEmail}
               </a>
               <p>Cuéntanos qué modelo te interesa, cómo es tu espacio o qué dudas tienes. Si puedes, añade una foto del rincón.</p>
-              <Button href="mailto:hola@butakeando.es">Escribir un email</Button>
+              <Button href={`mailto:${appConfig.supportEmail}`}>Escribir un email</Button>
             </div>
 
             <div className="contact-block">

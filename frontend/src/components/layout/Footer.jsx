@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { PageContainer } from './PageContainer';
 import { footerNavigationItems } from '../../constants/navigation';
+import { appConfig } from '../../lib/config';
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -26,7 +27,7 @@ export function Footer() {
 
           <div className="site-footer__col">
             <span className="site-footer__heading mono">Escríbenos</span>
-            <a href="mailto:hola@butakeando.es">hola@butakeando.es</a>
+            <a href={`mailto:${appConfig.supportEmail}`}>{appConfig.supportEmail}</a>
             <span>Sevilla, España</span>
             <span>Pago seguro con Stripe</span>
           </div>

@@ -53,7 +53,7 @@ npm run dev
 
 ```bash
 VITE_API_BASE_URL=http://127.0.0.1:8000/api/v1
-VITE_SUPPORT_EMAIL=atelier@butakeando.test
+VITE_SUPPORT_EMAIL=alvrodmol@gmail.com
 ```
 
 ### Backend
@@ -110,7 +110,7 @@ STRIPE_SECRET_KEY=replace-with-your-stripe-secret-key
 STRIPE_PUBLISHABLE_KEY=replace-with-your-stripe-publishable-key
 STRIPE_WEBHOOK_SECRET=replace-with-your-stripe-webhook-secret
 STRIPE_API_VERSION=2026-02-25.clover
-ORDER_NOTIFICATION_EMAIL=owner@example.com
+ORDER_NOTIFICATION_EMAIL=alvrodmol@gmail.com
 EMAIL_FROM=orders@example.com
 SMTP_HOST=smtp.example.com
 SMTP_PORT=587

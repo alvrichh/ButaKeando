@@ -1,4 +1,5 @@
 import { PageContainer } from '../../../components/layout/PageContainer';
+import { appConfig } from '../../../lib/config';
 import { usePageTitle } from '../../../hooks/usePageTitle';
 import { CatalogPreviewSection } from '../components/CatalogPreviewSection';
 import { LandingHero } from '../components/LandingHero';
@@ -32,8 +33,8 @@ export function HomePage() {
             ¿Dudas con la medida, el color o el sitio? <em>Escríbenos.</em>
           </h2>
           <p>Cuéntanos cómo es tu salón y te decimos con sinceridad qué butaca le va. Sin compromiso.</p>
-          <a className="letter__mail" href="mailto:hola@butakeando.es">
-            hola@butakeando.es <span aria-hidden="true">→</span>
+          <a className="letter__mail" href={`mailto:${appConfig.supportEmail}`}>
+            {appConfig.supportEmail} <span aria-hidden="true">→</span>
           </a>
         </section>
       </PageContainer>

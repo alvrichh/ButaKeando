@@ -8,6 +8,7 @@ import { SectionContainer } from '../../../components/layout/SectionContainer';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { useModal } from '../../../components/ui/Modal';
 import { ProductMedia } from '../../../components/ui/ProductMedia';
+import { appConfig } from '../../../lib/config';
 import { getProductBySlug } from '../../../constants/products';
 import { usePageTitle } from '../../../hooks/usePageTitle';
 import { MAX_ITEM_QUANTITY, useCart } from '../../cart/CartProvider';
@@ -61,7 +62,7 @@ export function ProductPage() {
         {
           label: 'Escribir email',
           tone: 'primary',
-          href: `mailto:hola@butakeando.es?subject=${encodeURIComponent(`Consulta: ${product.name}`)}`,
+          href: `mailto:${appConfig.supportEmail}?subject=${encodeURIComponent(`Consulta: ${product.name}`)}`,
         },
       ],
     });
