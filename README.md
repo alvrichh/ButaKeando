@@ -338,7 +338,7 @@ Example API request:
 ```bash
 curl -X POST http://127.0.0.1:8000/api/v1/checkout/session ^
   -H "Content-Type: application/json" ^
-  -d "{\"customer\":{\"full_name\":\"Jose Cabeza\",\"email\":\"jose@example.com\",\"phone\":\"600123123\"},\"shipping_address\":{\"address_line\":\"Calle Mayor 10\",\"city\":\"Sevilla\",\"postal_code\":\"41001\",\"province\":\"Sevilla\",\"country\":\"ES\"},\"comments\":\"Entrega por la tarde\",\"currency\":\"eur\",\"total\":1490,\"items\":[{\"product_id\":\"bernal-lounge-chair\",\"product_name\":\"Bernal Lounge Chair\",\"quantity\":1,\"unit_price\":1490}]}"
+  -d "{\"customer\":{\"full_name\":\"Jose Cabeza\",\"email\":\"jose@example.com\",\"phone\":\"600123123\"},\"shipping_address\":{\"address_line\":\"Calle Mayor 10\",\"city\":\"Sevilla\",\"postal_code\":\"41001\",\"province\":\"Sevilla\",\"country\":\"ES\"},\"comments\":\"Entrega por la tarde\",\"currency\":\"eur\",\"total\":199,\"items\":[{\"product_id\":\"butaca-vintage-retro\",\"product_name\":\"Butaca Vintage Retro\",\"quantity\":1,\"unit_price\":199}]}"
 ```
 
 Expected response includes:
